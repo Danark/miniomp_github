@@ -1,0 +1,10 @@
+LEVEL CPU SIZE 2
+1.tareador-VirtualBox
+2.tareador-VirtualBox
+
+LEVEL NODE SIZE 1
+tareador-VirtualBox
+
+LEVEL THREAD SIZE 2
+THREAD 1.1.1
+THREAD 1.1.2

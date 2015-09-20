@@ -1,0 +1,61 @@
+#include "libminiomp.h"
+#include "intrinsic.h"
+#include <pthread.h>
+
+
+
+void GOMP_critical_start (void) {
+  //printf("TBI: Entering an unnamed critical, don't know if anyone else is alrady in. I proceed\n");
+  pthread_mutex_lock(&miniomp_default_lock);
+}
+
+void GOMP_critical_end () {
+  //printf("Exiting an unnamed critical section. I can not inform anyone else\n");
+  pthread_mutex_unlock(&miniomp_default_lock);
+}
+
+#if MYBARRIER
+
+#endif
+
+void GOMP_barrier() {
+   #if MYBARRIER
+   pthread_mutex_lock(&(mybarrier.lock));
+   int num = omp_get_thread_num();
+   printf("Im thread %d\n", num);
+   mybarrier.count++;
+   int barrier_flag = mybarrier.flag;
+   if ( mybarrier.count == omp_get_num_threads()){
+   	mybarrier.count=0;
+	mybarrier.flag=barrier_flag^1;
+	__sync_synchronize();;
+	pthread_mutex_unlock(&(mybarrier.lock));
+	return;
+   }
+;
+   pthread_mutex_unlock(&(mybarrier.lock));
+   while (mybarrier.flag==barrier_flag){
+	//printf("------------------------------------------\n");
+   	__sync_synchronize();
+	if(miniomp_taskqueue.count>0){
+		miniomp_task_t *task;
+		pthread_mutex_lock(&(miniomp_taskqueue.lock));
+		task=first();
+		dequeue();
+		printf("Estic al barrier i agafo una task\n");
+		pthread_mutex_unlock(&(miniomp_taskqueue.lock));
+		void (*fn) (void*) = (void*)task->fn;
+		void (*data)(void*) = (void*)task->data;
+		fn(data);
+ 	}
+   	__sync_synchronize();
+   }
+   
+   
+   #else 
+  //printf("TBI: Entering in barrier, but do not know how to wait for the rest. I proceed\n");
+  pthread_barrier_wait(&miniomp_barrier);
+  #endif
+}
+
+
