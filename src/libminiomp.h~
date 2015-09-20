@@ -10,8 +10,8 @@
 
 
 // Extrae Constants
-#define  _EXTRAE_   0
-#define  END        0
+#define  _EXTRAE_   1
+#define  END        1
 #define  PARALLEL   2
 
 
