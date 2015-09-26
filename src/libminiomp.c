@@ -7,6 +7,7 @@ pthread_cond_t condition;
 int barrier_count1;
 int barrier_count2;
 int single_count;
+miniomp_loop_t miniomp_loop;
 
 
 

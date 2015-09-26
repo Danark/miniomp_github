@@ -24,6 +24,7 @@ init_miniomp(void) {
 
   #if _EXTRAE_
   Extrae_init();
+  printf ("Starting Extrae\n");
   #endif
   // Parse OMP_NUM_THREADS environment variable to initialize nthreads_var internal control variable
   parse_env();
@@ -48,4 +49,5 @@ fini_miniomp(void) {
   #if _EXTRAE_
   Extrae_fini();
   #endif
+  printf ("Ending Extrae\n");
 }

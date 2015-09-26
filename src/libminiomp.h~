@@ -10,8 +10,8 @@
 
 
 // Extrae Constants
-#define  _EXTRAE_   1
-#define  END        1
+#define  _EXTRAE_   0
+#define  END        0
 #define  PARALLEL   2
 
 
@@ -79,6 +79,17 @@ extern int end;
 
 
 // Type declaration for loop worksharing descriptor
+typedef struct {
+  long start;           // loop bounds and increment 
+  long end;
+  long incr;
+  int schedule;         // schedule kind for loop
+  long chunk_size;
+  long left;
+  long current;
+  bool isStart;
+  int count;
+} miniomp_loop_t;
 
 
 #define ws_STATIC 	0

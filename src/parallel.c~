@@ -26,7 +26,7 @@ void *worker( miniomp_parallel_t* parameters) {
 	printf("worker2\n");
         fn(fn_data);
 	printf("worker3\n");
-	printf("thread %d\n",miniomp_specifickey);
+	//printf("thread %d\n",miniomp_specifickey);
 	end++;
 	pthread_cond_signal(&condition);
 	pthread_mutex_unlock(&concurrent_lock);

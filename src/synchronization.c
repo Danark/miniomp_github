@@ -34,7 +34,7 @@ void GOMP_barrier() {
   barrier_count1++;
   if(barrier_count1==omp_get_num_threads()){
 	barrier_count1=0;
-	pthread_cond_signal(&condition);
+	pthread_cond_broadcast(&condition);
 	pthread_mutex_unlock(&concurrent_lock);
   }
   else{

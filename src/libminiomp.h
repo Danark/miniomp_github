@@ -79,6 +79,18 @@ extern int end;
 
 
 // Type declaration for loop worksharing descriptor
+typedef struct {
+  long start;           // loop bounds and increment 
+  long end;
+  long incr;
+  int schedule;         // schedule kind for loop
+  long chunk_size;
+  long left;
+  long current;
+  bool isStart;
+  int count;
+  int count2;
+} miniomp_loop_t;
 
 
 #define ws_STATIC 	0

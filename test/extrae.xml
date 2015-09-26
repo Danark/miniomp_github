@@ -12,8 +12,8 @@
     <counters enabled="yes" />
   </openmp>
 
-  <pthread enabled="no">
-    <locks enabled="no" />
+  <pthread enabled="yes">
+    <locks enabled="yes" />
     <counters enabled="yes" />
   </pthread>
 

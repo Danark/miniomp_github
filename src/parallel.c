@@ -37,8 +37,8 @@ void *worker( miniomp_parallel_t* parameters) {
 }
 
 
-pthread_t threads_aux[16];
-miniomp_parallel_t parameters[16];
+pthread_t threads_aux[100];
+miniomp_parallel_t parameters[100];
 void
 GOMP_parallel_start (void (*fn) (void *), void *data, unsigned num_threads) {
   if(!num_threads) num_threads = omp_get_num_threads();
