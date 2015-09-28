@@ -10,9 +10,18 @@
 
 
 // Extrae Constants
-#define  _EXTRAE_   0
-#define  END        0
-#define  PARALLEL   2
+#define  _EXTRAE_   	 1
+//*************************//
+#define  END_PARALLEL	 0 //
+#define  START_PARALLEL  1 //
+#define  START_BARRIER   2 //
+#define  WAIT_BARRIER    3 //
+#define  LEAVE_BARRIER   4 //
+#define  START_FOR	 5 //
+#define  END_FOR	 6 //
+#define  WAIT_FOR	 7 //
+#define  COUNTINUE_FOR	 8 //
+//*************************//
 
 
 #define MAX_THREADS 32
