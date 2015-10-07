@@ -3,6 +3,7 @@
 
 // Declaratiuon of global variable for loop work descriptor
 miniomp_loop_t miniomp_loop;
+int id_list[100];
 
 /* The *_next routines are called when the thread completes processing of 
    the iteration block currently assigned to it.  If the work-share 
@@ -18,12 +19,19 @@ bool
 GOMP_loop_dynamic_next (long *istart, long *iend) {
   //printf("TBI: Asking for more iterations? I gave you all at the beginning, no more left ...\n");
   bool ret=(true);
-  printf("Entro en Next\n");
+  //printf("Entro en Next\n");
    if((miniomp_loop.left/miniomp_loop.incr)>0){
-        printf("Primer if\n");
+	if (id_list[omp_get_thread_num()]==1){
+		#if _EXTRAE_
+	 	Extrae_event (7001, 0);
+		Extrae_event (7003, 0);
+	  	#endif
+	}
+        //printf("Primer if\n");
+	id_list[omp_get_thread_num()]=1;
   	*istart=miniomp_loop.current;
   	if ((miniomp_loop.left/miniomp_loop.incr)>=miniomp_loop.chunk_size){
-		printf("Segon if\n");	
+		//printf("Segon if\n");	
 		*iend=miniomp_loop.current+(miniomp_loop.chunk_size*miniomp_loop.incr);
 		miniomp_loop.current+=(miniomp_loop.chunk_size*miniomp_loop.incr);
 		miniomp_loop.left-=(miniomp_loop.chunk_size*miniomp_loop.incr);
@@ -34,28 +42,42 @@ GOMP_loop_dynamic_next (long *istart, long *iend) {
 	 }
 	//espera de la resta de threads x per poder seguir
 	miniomp_loop.count++;
-	printf("contador %d\n",miniomp_loop.count);
+	//printf("contador %d\n",miniomp_loop.count);
 	if(miniomp_loop.count==omp_get_num_threads()){
-		printf("count= %d\n",miniomp_loop.count);
-		printf("num_threads= %d\n",omp_get_num_threads());
-		printf("Los voy a despertar a todos!\n");
+		//printf("count= %d\n",miniomp_loop.count);
+		//printf("num_threads= %d\n",omp_get_num_threads());
+		//printf("Los voy a despertar a todos!\n");
 		miniomp_loop.count=0;
 		pthread_cond_broadcast(&condition);
 		pthread_mutex_unlock(&concurrent_lock);
-		printf("Salgo de despertarlos!\n");
+		//printf("Salgo de despertarlos!\n");
  	 }
   	else{
-		printf("Me quedo esperando\n");
+		//printf("Me quedo esperando\n");
 		pthread_cond_wait(&condition, &concurrent_lock);
-		printf("Salgo de la espera\n");
+		//printf("Salgo de la espera\n");
 		pthread_mutex_unlock(&concurrent_lock);	
-		printf("Me despierto!\n");
+		//printf("Me despierto!\n");
 	}
-	printf("Cojo el mutex\n");
+	//printf("Cojo el mutex\n");
 	pthread_mutex_lock(&concurrent_lock);
+	if (id_list[omp_get_thread_num()]==1){
+		miniomp_loop.count_iteration++;
+		#if _EXTRAE_
+	 	Extrae_event (7001, miniomp_loop.count_iteration);
+		Extrae_event (7003, 1);
+	  	#endif
+	}
   }
   else {
   	ret=(false);
+
+        if (id_list[omp_get_thread_num()]==1){
+		#if _EXTRAE_
+	 	Extrae_event (7001, 0);
+		Extrae_event (7003, 0);
+	  	#endif
+	}
   }
 
   
@@ -91,7 +113,7 @@ GOMP_loop_dynamic_start (long start, long end, long incr, long chunk_size,
 	miniomp_loop.end=end;
 	miniomp_loop.incr=incr;
 	miniomp_loop.chunk_size=chunk_size;
-        //miniomp_loop.count++;
+        miniomp_loop.count_iteration=0;
         miniomp_loop.isStart=(true);
 	miniomp_loop.current=start;
 	miniomp_loop.count=0;

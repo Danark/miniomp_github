@@ -19,29 +19,26 @@ void GOMP_critical_end () {
 #endif
 
 void GOMP_barrier() {
-   //printf("TBI: Entering in barrier, but do not know how to wait for the rest. I proceed\n");
-   /*int id=(pthread_getspecific(miniomp_specifickey)+1);
-   id=id%omp_get_num_threads();
-   barrier_count1++;
-   pthread_continue_np(threads[id]);
-   while (barrier_count1!=omp_get_num_threads()) {}
-   int error;
-   for (int i=0; i<get_num_threads()-1; i++){
-        if(i!=pthread_getspecific(miniomp_specifickey)) {
-              error=pthread_suspend_np(threads[i]);
-        }
-}*/
+  #if _EXTRAE_
+  Extrae_event (START_BARRIER, omp_get_thread_num());
+  #endif
   barrier_count1++;
   if(barrier_count1==omp_get_num_threads()){
 	barrier_count1=0;
-	pthread_cond_signal(&condition);
+	pthread_cond_broadcast(&condition);
 	pthread_mutex_unlock(&concurrent_lock);
   }
   else{
+	#if _EXTRAE_
+        Extrae_event (WAIT_BARRIER, omp_get_thread_num());
+        #endif
 	pthread_cond_wait(&condition, &concurrent_lock);
 	pthread_mutex_unlock(&concurrent_lock);
   }
   pthread_mutex_lock(&concurrent_lock);
+  #if _EXTRAE_
+  Extrae_event (LEAVE_BARRIER, omp_get_thread_num());
+  #endif
 
 }
 

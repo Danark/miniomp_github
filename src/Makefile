@@ -6,7 +6,7 @@ CLIBS = -L$(EXTRAE_HOME)/lib -lomptrace
 TARGETS  = libminiomp.so
 all: $(TARGETS) 
 
-libminiomp.so: libminiomp.h libminiomp.c env.c intrinsic.c parallel.c synchronization.c single.c loop.c task.c
+libminiomp.so: libminiomp.h libminiomp.c env.c intrinsic.c parallel.c synchronization.c single.c loop.c task.c instrumentation.c
 	$(CC) $(CFLAGS_SO) $(CFLAGS) $+ -o $(MINIOMP)/lib/$@ -lpthread $(CLIBS)
 
 clean:

@@ -9,8 +9,7 @@ int omp_get_num_threads (void) {
 }
 
 int omp_get_thread_num (void) {
-  //printf("TBI: omp_get_thread_num still doesn't know who I am ... let's say 0\n");
-  //int num = (int)(long)pthread_getspecific(miniomp_specifickey);
-  //return num;
-  return 0
+  int num = (int)(long)pthread_getspecific(miniomp_specifickey);
+  return num;
+  //return 0;
 }

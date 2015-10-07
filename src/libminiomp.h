@@ -94,6 +94,7 @@ typedef struct {
   long incr;
   int schedule;         // schedule kind for loop
   long chunk_size;
+  int count_iteration;
   long left;
   long current;
   bool isStart;

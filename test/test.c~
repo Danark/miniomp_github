@@ -17,6 +17,7 @@ int foo() {
     
     printf("Thread %d finished the execution of foo\n", omp_get_thread_num());
     #pragma omp barrier
+    //#pragma omp barrier
     printf("Thread %d finished the execution of foo 2\n", omp_get_thread_num());
     }
 
