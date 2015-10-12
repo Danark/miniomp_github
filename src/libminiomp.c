@@ -8,6 +8,9 @@ int barrier_count1;
 int barrier_count2;
 int single_count;
 miniomp_loop_t miniomp_loop;
+int count;
+int count_critical;
+int count_dependences;
 
 
 
@@ -33,6 +36,9 @@ init_miniomp(void) {
   single_count=0;
   barrier_count1=0;
   barrier_count2=0;
+  count=0;
+  count_critical=788;
+  count_dependences=0;
   pthread_mutex_init(&concurrent_lock, NULL);
   pthread_cond_init(&condition, NULL);
 

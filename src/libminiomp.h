@@ -82,8 +82,10 @@ extern pthread_t *threads;
 extern int barrier_count1;
 //Barrier indicator 2
 extern int barrier_count2;
-
+extern int count;
+extern int count_critical;
 extern int end;
+extern int count_dependences;
 
 
 
@@ -100,6 +102,7 @@ typedef struct {
   bool isStart;
   int count;
   int count2;
+  int dependences;
 } miniomp_loop_t;
 
 

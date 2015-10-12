@@ -10,7 +10,7 @@
 
 
 // Extrae Constants
-#define  _EXTRAE_   	 0
+#define  _EXTRAE_   	 1
 //*************************//
 #define  END_PARALLEL	 0 //
 #define  START_PARALLEL  1 //
@@ -82,8 +82,10 @@ extern pthread_t *threads;
 extern int barrier_count1;
 //Barrier indicator 2
 extern int barrier_count2;
-
+extern int count;
+extern int count_critical;
 extern int end;
+extern int count_dependences;
 
 
 
