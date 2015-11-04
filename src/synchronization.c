@@ -5,16 +5,17 @@
 
 
 void GOMP_critical_start (void) {
-  printf("TBI: Entering an unnamed critical, don't know if anyone else is alrady in. I proceed\n");
+  //printf("TBI: Entering an unnamed critical, don't know if anyone else is alrady in. I proceed\n");
   start_event_critical();
 
 }
 
 void GOMP_critical_end () {
-  printf("Exiting an unnamed critical section. I can not inform anyone else\n");
+  //printf("Exiting an unnamed critical section. I can not inform anyone else\n");
   end_event_critical();
 
 }
+
 
 #if MYBARRIER
 

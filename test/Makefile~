@@ -1,12 +1,14 @@
-.SUFFIXES: -omp -domp -gomp -dgomp -asm
+.SUFFIXES: -omp -domp -gomp -dgomp -asm -gasm
 CC = gcc
-MINIOMP = /home/tareador/codes/TAREADOR/miniomp2
 OPENMP	 = -fopenmp
 CFLAGS   = -Wall -O -std=c99 -march=native -I.
 CLIBS    = -L$(MINIOMP)/lib -lminiomp
 
 .c-asm: 
-	$(CC) $(CFLAGS) $(OPENMP) -c -S $< -o $@ $(CLIBS) 
+	$(CC) $(CFLAGS) $(OPENMP) -c -S $< -o $@ $(CLIBS)
+
+.c-gasm:
+	$(CC) $(CFLAGS) $(OPENMP) -c -S $< -o $@
 
 .c-omp: 
 	$(CC) $(CFLAGS) $(OPENMP) $< -o $@ $(CLIBS) 
@@ -24,4 +26,4 @@ clean:
 	rm -rf *-omp *-gomp *-asm *-domp *-dgomp
 
 ultraclean:
-	rm -rf *-omp *-gomp *-asm *-domp *-dgomp *.prv *.pcf *.row TRACE.mpits set-0
+	rm -rf *-omp *-gomp *-asm *-domp *-dgomp *.prv *.pcf *.row *.dim *.trf TRACE.mpits set-0

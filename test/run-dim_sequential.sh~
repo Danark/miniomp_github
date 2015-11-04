@@ -1,0 +1,14 @@
+#!/bin/bash
+
+USAGE="\n USAGE: ./run-dim_sequential.sh prog num_threads\n
+        prog        -> omp program name\n"
+
+if (test $# -lt 2)
+then
+        echo -e $USAGE
+        exit 0
+fi
+
+
+
+prv2dim $1 dim_sequential.dim

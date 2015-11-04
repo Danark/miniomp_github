@@ -16,6 +16,7 @@ void GOMP_critical_end () {
 
 }
 
+
 #if MYBARRIER
 
 #endif
@@ -40,7 +41,7 @@ void GOMP_barrier() {
   pthread_mutex_lock(&concurrent_lock);
   #if _EXTRAE_
   start_event_thread();
-  start_vertical_dependences()
+  start_vertical_dependences();
   #endif
 
 }

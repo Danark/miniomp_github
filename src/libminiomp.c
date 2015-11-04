@@ -11,6 +11,7 @@ miniomp_loop_t miniomp_loop;
 int count;
 int count_critical;
 int count_dependences;
+int count_tasks_loop;
 
 
 
@@ -39,6 +40,7 @@ init_miniomp(void) {
   count=0;
   count_critical=788;
   count_dependences=0;
+  int count_tasks_loop=0;
   pthread_mutex_init(&concurrent_lock, NULL);
   pthread_cond_init(&condition, NULL);
 

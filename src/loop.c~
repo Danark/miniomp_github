@@ -3,7 +3,7 @@
 
 // Declaratiuon of global variable for loop work descriptor
 miniomp_loop_t miniomp_loop;
-
+int contador;
 
 /* The *_next routines are called when the thread completes processing of 
    the iteration block currently assigned to it.  If the work-share 
@@ -54,7 +54,7 @@ GOMP_loop_dynamic_next (long *istart, long *iend) {
 		//miniomp_loop.count_iteration++;
 		#if _EXTRAE_
 	 	start_event_loop();
-                start_dependences(miniomp_loop.dependences);
+                start_horizontal_dependences(miniomp_loop.dependences);
 	  	#endif
 
   }
@@ -138,7 +138,15 @@ GOMP_loop_end (void) {
    set_count_dependences(miniomp_loop.dependences);
    #endif
    GOMP_barrier_loop();
-   miniomp_loop.isStart=(false);
+   contador++;
+   if (contador==1){
+   	miniomp_loop.isStart=(false);
+	printf("contador= %d\n", contador);
+   }
+   if (contador==omp_get_num_threads()){
+	contador=0;
+   }
+   
    
 }
 

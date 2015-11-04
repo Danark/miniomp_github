@@ -1,6 +1,7 @@
 #include "libminiomp.h"
 
 // Initializes the task queue
+/*
 void init_task_queue(int max_elements) {
 
 
@@ -21,7 +22,6 @@ bool is_empty() {
 bool is_full() {
   
  return true;
-  }
 
    
 }
@@ -52,8 +52,43 @@ GOMP_task (void (*fn) (void *), void *data, void (*cpyfn) (void *, void *),
            void **depend)
 {
 
-   
+	if (if_clause){
+    	    if (__builtin_expect (cpyfn != NULL, 0))
+        	{
+			char * buf =  malloc(sizeof(char) * (arg_size + arg_align - 1));
+			char *arg = (char *) (((uintptr_t) buf + arg_align - 1) 
+						& ~(uintptr_t) (arg_align - 1));
+			cpyfn (arg, data);
+			printf("execute 1\n");
+			fn(arg);
+                }
+            else 
+		{
+			char * arg =  malloc(sizeof(char) * (arg_size + arg_align - 1));
+			memcpy(arg, data, arg_size);
+			printf("execute 2\n");
+			fn(arg);
+		}
+	}
+	else{
+		if (__builtin_expect (cpyfn != NULL, 0))
+        	{
+	 	 char * buf =  malloc(sizeof(char) * (arg_size + arg_align - 1));
+         	 char *arg = (char *) (((uintptr_t) buf + arg_align - 1)
+         	                       & ~(uintptr_t) (arg_align - 1));
+         	 cpyfn (arg, data);
+		 printf("execute 3\n");
+                 fn(arg);
+		 
+       	 	}
+    		else{
+			printf("execute 4\n");
+        		fn(data);
+		}
+    	}
 }
+       
+
 
 void
 GOMP_taskwait (void)

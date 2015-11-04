@@ -19,10 +19,14 @@ void foo() {
    
   
   
-    #pragma omp for  
+#pragma omp for schedule(dynamic,1) 
     for (long i = 0; i < 10; i++){
-	#pragma omp critical
-        result++;}
+  	for (int u=0; u<1000; u++){
+	   #pragma omp critical 
+	   result++;
+	}
+	
+    }
    
     /*#pragma omp for schedule(dynamic,1) nowait
     for (long i = 0; i < 10; i++)

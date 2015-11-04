@@ -86,6 +86,7 @@ extern int count;
 extern int count_critical;
 extern int end;
 extern int count_dependences;
+extern int count_tasks_loop;
 
 
 
@@ -121,14 +122,23 @@ typedef struct {
 // Declaratiuon of global variable for single work descriptor
 extern int single_count;
 
-/* This structure describes a "task" to be run by a thread.  */
 
 
 //mutex que permite concurrencia
 extern pthread_mutex_t concurrent_lock;
 extern pthread_cond_t condition;
 
+//this estructure describes tha hash table of critical name
 
+typedef struct {
+    int index;
+    string name;
+    struct miniomp_node_t *next;
+} miniomp_task_t;
+
+typedef struct {
+    miniomp_node_t *hash;
+} miniomp_hash_t;
 
 #define MAXELEMENTS_TQ 128
 
