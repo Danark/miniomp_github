@@ -1,5 +1,5 @@
 #include "libminiomp.h"
-#include "intrinsic.h"
+//#include "intrinsic.h"
 
 
 pthread_mutex_t concurrent_lock;
@@ -9,12 +9,19 @@ int barrier_count2;
 int single_count;
 miniomp_loop_t miniomp_loop;
 int count;
-int count_critical;
+int count_critical_loop;
+int count_loop;
 int count_dependences;
+int count_tasks_loop;
+miniomp_hash_t miniomp_hash;
+//miniomp_critical_depth_t miniomp_critical_depth;
+int count_max_inner_loop;
+int count_inner_loop;
+miniomp_hash_t miniomp_hash;
+int thread_count;
 
 
 
-//miniomp_taskqueue_t miniomp_taskqueuee
 // Library constructor and desctructor
 void init_miniomp(void) __attribute__((constructor));
 void fini_miniomp(void) __attribute__((destructor));
@@ -37,10 +44,13 @@ init_miniomp(void) {
   barrier_count1=0;
   barrier_count2=0;
   count=0;
-  count_critical=788;
+  count_critical_loop=0;
+  count_loop=0;
   count_dependences=0;
+  int count_tasks_loop=0;
   pthread_mutex_init(&concurrent_lock, NULL);
   pthread_cond_init(&condition, NULL);
+  init_hash();
 
   // Initialize Pthread data structures and thread-specific data
   // Initialize OpenMP default lock and default barrier

@@ -1,0 +1,15 @@
+// Extrae Constants
+#define  _EXTRAE_   	 1
+#define MAX_THREADS 32
+#define MAX_CRITICALS 100
+#define MAX_TASK 100
+
+
+#define ws_STATIC 	0
+#define ws_STATICCHUNK 	1
+#define ws_DYNAMIC 	2
+#define ws_GUIDED 	3
+#define ws_RUNTIME 	4
+#define ws_AUTO 	5
+
+

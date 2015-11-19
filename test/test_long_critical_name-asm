@@ -1,0 +1,124 @@
+	.file	"test_long_critical_name.c"
+	.section	.rodata.str1.1,"aMS",@progbits,1
+.LC0:
+	.string	"result = %ld\n"
+	.text
+	.type	foo._omp_fn.0, @function
+foo._omp_fn.0:
+.LFB48:
+	.cfi_startproc
+	pushq	%rbp
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	pushq	%rbx
+	.cfi_def_cfa_offset 24
+	.cfi_offset 3, -24
+	subq	$24, %rsp
+	.cfi_def_cfa_offset 48
+	leaq	8(%rsp), %r9
+	movq	%rsp, %r8
+	movl	$1, %ecx
+	movl	$1, %edx
+	movl	$10, %esi
+	movl	$0, %edi
+	call	GOMP_loop_dynamic_start
+	testb	%al, %al
+	je	.L2
+.L6:
+	movq	(%rsp), %rbx
+	movq	8(%rsp), %rbp
+.L5:
+	movl	$.gomp_critical_user_pene, %edi
+	call	GOMP_critical_name_start
+	movq	result(%rip), %rdx
+	movl	$100000000, %eax
+	jmp	.L3
+.L9:
+	addq	$100000000, %rdx
+	movq	%rdx, result(%rip)
+	movl	$.gomp_critical_user_pene, %edi
+	call	GOMP_critical_name_end
+	addq	$1, %rbx
+	cmpq	%rbx, %rbp
+	jg	.L5
+	leaq	8(%rsp), %rsi
+	movq	%rsp, %rdi
+	call	GOMP_loop_dynamic_next
+	testb	%al, %al
+	jne	.L6
+	jmp	.L2
+.L3:
+	subl	$1, %eax
+	.p2align 4,,6
+	jne	.L3
+	.p2align 4,,8
+	jmp	.L9
+.L2:
+	.p2align 4,,8
+	call	GOMP_loop_end
+	movq	result(%rip), %rdx
+	movl	$.LC0, %esi
+	movl	$1, %edi
+	movl	$0, %eax
+	call	__printf_chk
+	addq	$24, %rsp
+	.cfi_def_cfa_offset 24
+	popq	%rbx
+	.cfi_def_cfa_offset 16
+	popq	%rbp
+	.cfi_def_cfa_offset 8
+	ret
+	.cfi_endproc
+.LFE48:
+	.size	foo._omp_fn.0, .-foo._omp_fn.0
+	.globl	foo
+	.type	foo, @function
+foo:
+.LFB46:
+	.cfi_startproc
+	subq	$8, %rsp
+	.cfi_def_cfa_offset 16
+	movl	$0, %edx
+	movl	$0, %esi
+	movl	$foo._omp_fn.0, %edi
+	call	GOMP_parallel_start
+	movl	$0, %edi
+	call	foo._omp_fn.0
+	call	GOMP_parallel_end
+	addq	$8, %rsp
+	.cfi_def_cfa_offset 8
+	ret
+	.cfi_endproc
+.LFE46:
+	.size	foo, .-foo
+	.globl	main
+	.type	main, @function
+main:
+.LFB47:
+	.cfi_startproc
+	subq	$8, %rsp
+	.cfi_def_cfa_offset 16
+	movl	$0, %eax
+	call	foo
+	movq	result(%rip), %rdx
+	movl	$.LC0, %esi
+	movl	$1, %edi
+	movl	$0, %eax
+	call	__printf_chk
+	movl	$0, %eax
+	addq	$8, %rsp
+	.cfi_def_cfa_offset 8
+	ret
+	.cfi_endproc
+.LFE47:
+	.size	main, .-main
+	.comm	.gomp_critical_user_pene,8,8
+	.globl	result
+	.bss
+	.align 8
+	.type	result, @object
+	.size	result, 8
+result:
+	.zero	8
+	.ident	"GCC: (Ubuntu 4.8.4-2ubuntu1~14.04) 4.8.4"
+	.section	.note.GNU-stack,"",@progbits

@@ -16,6 +16,13 @@ void foo() {
     #pragma omp for schedule(dynamic,3) 
     for (long i = 0; i < 10; i++){
 	#pragma omp task
+	{
+		#pragma omp critical
+        		result++;
+	}
+	#pragma omp task
+        result++;
+	#pragma omp task
         result++;}
 
    #pragma omp taskwait

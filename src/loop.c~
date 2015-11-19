@@ -18,26 +18,49 @@ int contador;
 bool
 GOMP_loop_dynamic_next (long *istart, long *iend) {
   //printf("TBI: Asking for more iterations? I gave you all at the beginning, no more left ...\n");
+  #if _EXTRAE_
+  calc_max_dependences();
+  end_event_loop();
+  #endif
+  miniomp_loop.count++;
+  if(miniomp_loop.count==omp_get_num_threads()){
+  	miniomp_loop.count=0;
+	pthread_cond_broadcast(&condition);
+	pthread_mutex_unlock(&concurrent_lock);
+  }
+  else{
+		
+	pthread_cond_wait(&condition, &concurrent_lock);
+	pthread_mutex_unlock(&concurrent_lock);	
+		
+	}
+  pthread_mutex_lock(&concurrent_lock);
+  #if _EXTRAE_
+  start_event_loop();
+  start_horizontal_dependences(miniomp_loop.dependences);
+  #endif
   bool ret=(true);
   //printf("Entro en Next\n");
    if((miniomp_loop.left/miniomp_loop.incr)>0){
-		#if _EXTRAE_
-	 	end_event_loop();
-	  	#endif
+	/*#if _EXTRAE_
+	calc_max_dependences();
+	end_event_loop();
+	#endif*/
         
   	*istart=miniomp_loop.current;
   	if ((miniomp_loop.left/miniomp_loop.incr)>=miniomp_loop.chunk_size){
-			
+		printf("GRAN\n");
 		*iend=miniomp_loop.current+(miniomp_loop.chunk_size*miniomp_loop.incr);
 		miniomp_loop.current+=(miniomp_loop.chunk_size*miniomp_loop.incr);
 		miniomp_loop.left-=(miniomp_loop.chunk_size*miniomp_loop.incr);
 		}
 	else{
+         printf("PETIT\n");
 	 *iend=miniomp_loop.end;
 	 miniomp_loop.left=0;
 	 }
 	//espera de la resta de threads x per poder seguir
-	miniomp_loop.count++;
+	/*miniomp_loop.count++;
 	if(miniomp_loop.count==omp_get_num_threads()){
 		miniomp_loop.count=0;
 		pthread_cond_broadcast(&condition);
@@ -56,15 +79,17 @@ GOMP_loop_dynamic_next (long *istart, long *iend) {
 	 	start_event_loop();
                 start_horizontal_dependences(miniomp_loop.dependences);
 	  	#endif
+*/
 
   }
   else {
   	ret=(false);
 
        
-		#if _EXTRAE_
+		/*#if _EXTRAE_
+		calc_max_dependences();
 	 	end_event_loop();
-	  	#endif
+	  	#endif*/
 	
   }
 
@@ -105,10 +130,13 @@ GOMP_loop_dynamic_start (long start, long end, long incr, long chunk_size,
 	miniomp_loop.count=0;
 	miniomp_loop.dependences=count;
 	miniomp_loop.count2=0;
+	init_loop_dependences();
+        //init_critical_dependences();
   }
   #if _EXTRAE_
   end_event_thread();
   #endif
+  GOMP_barrier_No_Extrae();
   bool ret=GOMP_loop_dynamic_next(istart, iend);  
   
   //GOMP_loop_dynamic_next(istart, iend);  
@@ -134,10 +162,10 @@ GOMP_loop_end (void) {
 	miniomp_loop.count2=0;
    }
    
-   #if _EXTRAE_
+   /*#if _EXTRAE_
    set_count_dependences(miniomp_loop.dependences);
-   #endif
-   GOMP_barrier_loop();
+   #endif*/
+   GOMP_barrier_loop(miniomp_loop.dependences);
    contador++;
    if (contador==1){
    	miniomp_loop.isStart=(false);

@@ -34,22 +34,22 @@ void *worker( miniomp_parallel_t* parameters) {
 	end++;
 	pthread_cond_signal(&condition);
 	 #if _EXTRAE_
-  	Extrae_event (7001, 0);
+  	end_event_thread();
   	#endif
 	pthread_mutex_unlock(&concurrent_lock);
 	pthread_exit(NULL);
-//pthread_exit((void *) miniomp_specifickey);
-	//point=1;
+
 	
 }
 
 
-pthread_t threads_aux[100];
-miniomp_parallel_t parameters[100];
+pthread_t threads_aux[MAX_THREADS];
+miniomp_parallel_t parameters[MAX_THREADS];
 void
 GOMP_parallel_start (void (*fn) (void *), void *data, unsigned num_threads) {
   if(!num_threads) num_threads = omp_get_num_threads();
   printf("Starting a parallel region using %d threads\n", num_threads);
+  printf("MAX %d threads\n", MAX_THREADS);
   pthread_key_create(&miniomp_specifickey, NULL);
  
   for (int i=0; i<num_threads-1; i++){
@@ -73,11 +73,8 @@ GOMP_parallel_start (void (*fn) (void *), void *data, unsigned num_threads) {
 
 void
 GOMP_parallel_end (void) {
-  //pthread_mutex_unlock(&concurrent_lock);
-  //printf("=======================================\n");
-  //while(end!=(omp_get_num_threads())-1){}
   #if _EXTRAE_
-  Extrae_event (7001, 0);
+  end_event_thread();
   #endif
   while(end!=(omp_get_num_threads())-1){
 	//printf("while\n");

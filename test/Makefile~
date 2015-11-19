@@ -1,5 +1,5 @@
 .SUFFIXES: -omp -domp -gomp -dgomp -asm -gasm
-CC = gcc
+CC = gcc-4.9
 OPENMP	 = -fopenmp
 CFLAGS   = -Wall -O -std=c99 -march=native -I.
 CLIBS    = -L$(MINIOMP)/lib -lminiomp
@@ -26,4 +26,4 @@ clean:
 	rm -rf *-omp *-gomp *-asm *-domp *-dgomp
 
 ultraclean:
-	rm -rf *-omp *-gomp *-asm *-domp *-dgomp *.prv *.pcf *.row *.dim *.trf TRACE.mpits set-0
+	rm -rf *-omp *-gomp *-asm *-domp *-dgomp *.prv *.pcf *.row *.dim *.trf *-gasm TRACE.mpits set-0

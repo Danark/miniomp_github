@@ -5,11 +5,11 @@ void omp_set_num_threads (int n) {
 }
 
 int omp_get_num_threads (void) {
+  end_event_thread();
   return(miniomp_icv.nthreads_var);
 }
 
 int omp_get_thread_num (void) {
   int num = (int)(long)pthread_getspecific(miniomp_specifickey);
   return num;
-  //return 0;
 }

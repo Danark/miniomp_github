@@ -1,0 +1,31 @@
+
+typedef struct {
+  int nthreads_var;
+  // Add other ICV if needed
+} miniomp_icv_t;
+
+typedef struct {
+    void (*fn) (void *);
+    void *fn_data;
+    int id;
+} miniomp_parallel_t;
+
+typedef struct {
+  long start;           // loop bounds and increment 
+  long end;
+  long incr;
+  int schedule;         // schedule kind for loop
+  long chunk_size;
+  int count_iteration;
+  long left;
+  long current;
+  bool isStart;
+  int count;
+  int count2;
+  int dependences;
+} miniomp_loop_t;
+
+typedef struct {
+    int *hash;
+    int index;
+} miniomp_hash_t;
