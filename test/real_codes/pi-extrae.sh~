@@ -13,4 +13,6 @@ fi
 #export LD_PRELOAD=$EXTRAE_HOME/lib/libomptrace.so
 export LD_PRELOAD=${EXTRAE_HOME}/lib/libseqtrace.so
 export EXTRAE_CONFIG_FILE=./extrae.xml
-OMP_NUM_THREADS=$2 ./$1
+OMP_NUM_THREADS=$2 ./pi-omp $1
+
+

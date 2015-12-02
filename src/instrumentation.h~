@@ -42,3 +42,12 @@ void start_event_task();
 
 //evento Extrae que indica el fin de una task
 void end_event_task();
+
+//evento que inicializa el hash
+void init_hash();
+
+//evento que busca en el hash
+int found_hash(int id);
+
+//evento que a;ade en el hash
+int insert_hash(int id);

@@ -112,6 +112,32 @@ GOMP_parallel (void (*fn) (void *), void *data, unsigned num_threads, unsigned i
   Extrae_event (1000, END);
   #endif
   printf("Reaching the end of the parallel region\n");
-}*/
+}
+*/
 
+
+void
+GOMP_parallel (void (*fn) (void *), void *data, unsigned num_threads, unsigned int flags) {
+  if(!num_threads) num_threads = omp_get_num_threads();
+  printf("Starting a parallel region using %d threads\n", num_threads);
+  printf("MAX %d threads\n", MAX_THREADS);
+  pthread_key_create(&miniomp_specifickey, NULL);
+  for (int i=0; i<num_threads; i++){
+      parameters[i].fn=fn;
+      printf("%d\n", i);
+      parameters[i].fn_data=data;
+      parameters[i].id=i;
+      printf("id %d\n",i);
+      pthread_create(&threads_aux[i], NULL, worker, &parameters[i]);
+   }
+  /*while(end!=(omp_get_num_threads())-1){
+	pthread_cond_wait(&condition, &concurrent_lock);
+  }
+  pthread_mutex_unlock(&concurrent_lock);*/
+ 
+  for( int i=0; i<omp_get_num_threads(); i++){
+	pthread_join(threads_aux[i], NULL);
+  }
+  printf("Reaching the end of the parallel region\n");
+}
 

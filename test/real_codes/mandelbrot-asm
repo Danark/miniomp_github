@@ -1,0 +1,481 @@
+	.file	"mandelbrot.c"
+	.text
+	.type	mandelbrot._omp_fn.0, @function
+mandelbrot._omp_fn.0:
+.LFB55:
+	.cfi_startproc
+	pushq	%r12
+	.cfi_def_cfa_offset 16
+	.cfi_offset 12, -16
+	pushq	%rbp
+	.cfi_def_cfa_offset 24
+	.cfi_offset 6, -24
+	pushq	%rbx
+	.cfi_def_cfa_offset 32
+	.cfi_offset 3, -32
+	subq	$16, %rsp
+	.cfi_def_cfa_offset 48
+	movq	%rdi, %rbx
+	movslq	40(%rdi), %rsi
+	leaq	8(%rsp), %r9
+	movq	%rsp, %r8
+	movl	$100, %ecx
+	movl	$1, %edx
+	movl	$0, %edi
+	call	GOMP_loop_dynamic_start
+	testb	%al, %al
+	je	.L2
+	movl	$0, %ebp
+	movq	%rbp, %r12
+.L11:
+	movl	(%rsp), %ecx
+	movl	8(%rsp), %edi
+	vmovsd	.LC1(%rip), %xmm6
+.L4:
+	movl	$0, col(%rip)
+	movslq	%ecx, %rsi
+	salq	$3, %rsi
+	movl	$0, %edx
+	cmpl	$0, 44(%rbx)
+	jg	.L12
+.L8:
+	addl	$1, %ecx
+	cmpl	%ecx, %edi
+	jg	.L4
+	leaq	8(%rsp), %rsi
+	movq	%rsp, %rdi
+	call	GOMP_loop_dynamic_next
+	testb	%al, %al
+	jne	.L11
+	jmp	.L2
+.L12:
+	vxorpd	%xmm5, %xmm5, %xmm5
+	vcvtsi2sd	%edx, %xmm5, %xmm5
+	vmulsd	16(%rbx), %xmm5, %xmm5
+	vaddsd	(%rbx), %xmm5, %xmm5
+	movl	%ecx, %eax
+	notl	%eax
+	addl	40(%rbx), %eax
+	vxorpd	%xmm4, %xmm4, %xmm4
+	vcvtsi2sd	%eax, %xmm4, %xmm4
+	vmulsd	24(%rbx), %xmm4, %xmm4
+	vaddsd	8(%rbx), %xmm4, %xmm4
+	vmovq	%rbp, %xmm0
+	vmovq	%r12, %xmm2
+	movl	$0, %eax
+.L9:
+	vmulsd	%xmm2, %xmm2, %xmm1
+	vmulsd	%xmm0, %xmm0, %xmm3
+	vsubsd	%xmm3, %xmm1, %xmm1
+	vaddsd	%xmm1, %xmm5, %xmm1
+	vaddsd	%xmm2, %xmm2, %xmm2
+	vmulsd	%xmm0, %xmm2, %xmm0
+	vaddsd	%xmm0, %xmm4, %xmm0
+	addl	$1, %eax
+	vmulsd	%xmm1, %xmm1, %xmm2
+	vmulsd	%xmm0, %xmm0, %xmm3
+	vaddsd	%xmm3, %xmm2, %xmm2
+	vucomisd	%xmm2, %xmm6
+	ja	.L6
+.L10:
+	movq	32(%rbx), %r8
+	movslq	%edx, %rdx
+	movq	(%r8,%rsi), %r8
+	movl	%eax, (%r8,%rdx,4)
+	movl	col(%rip), %eax
+	leal	1(%rax), %edx
+	movl	%edx, col(%rip)
+	cmpl	%edx, 44(%rbx)
+	jg	.L12
+	jmp	.L8
+.L6:
+	vmovapd	%xmm1, %xmm2
+	cmpl	48(%rbx), %eax
+	jl	.L9
+	jmp	.L10
+.L2:
+	call	GOMP_loop_end_nowait
+	addq	$16, %rsp
+	.cfi_def_cfa_offset 32
+	popq	%rbx
+	.cfi_def_cfa_offset 24
+	popq	%rbp
+	.cfi_def_cfa_offset 16
+	popq	%r12
+	.cfi_def_cfa_offset 8
+	ret
+	.cfi_endproc
+.LFE55:
+	.size	mandelbrot._omp_fn.0, .-mandelbrot._omp_fn.0
+	.globl	getusec_
+	.type	getusec_, @function
+getusec_:
+.LFB52:
+	.cfi_startproc
+	subq	$24, %rsp
+	.cfi_def_cfa_offset 32
+	movl	$0, %esi
+	movq	%rsp, %rdi
+	call	gettimeofday
+	vxorpd	%xmm0, %xmm0, %xmm0
+	vcvtsi2sdq	(%rsp), %xmm0, %xmm0
+	vmulsd	.LC2(%rip), %xmm0, %xmm0
+	vxorpd	%xmm1, %xmm1, %xmm1
+	vcvtsi2sdq	8(%rsp), %xmm1, %xmm1
+	vaddsd	%xmm1, %xmm0, %xmm0
+	addq	$24, %rsp
+	.cfi_def_cfa_offset 8
+	ret
+	.cfi_endproc
+.LFE52:
+	.size	getusec_, .-getusec_
+	.globl	mandelbrot
+	.type	mandelbrot, @function
+mandelbrot:
+.LFB53:
+	.cfi_startproc
+	subq	$72, %rsp
+	.cfi_def_cfa_offset 80
+	vmovsd	%xmm0, (%rsp)
+	vmovsd	%xmm1, 8(%rsp)
+	vmovsd	%xmm2, 16(%rsp)
+	vmovsd	%xmm3, 24(%rsp)
+	movq	%rcx, 32(%rsp)
+	movl	%edi, 40(%rsp)
+	movl	%esi, 44(%rsp)
+	movl	%edx, 48(%rsp)
+	movl	$0, %ecx
+	movl	$0, %edx
+	movq	%rsp, %rsi
+	movl	$mandelbrot._omp_fn.0, %edi
+	call	GOMP_parallel
+	addq	$72, %rsp
+	.cfi_def_cfa_offset 8
+	ret
+	.cfi_endproc
+.LFE53:
+	.size	mandelbrot, .-mandelbrot
+	.section	.rodata.str1.8,"aMS",@progbits,1
+	.align 8
+.LC4:
+	.string	"Usage: %s [-o -i maxiter -w windowsize -c x0 y0 -s size]\n"
+	.align 8
+.LC5:
+	.string	"       -o to write computed image to disk (default no file generated)\n"
+	.align 8
+.LC6:
+	.string	"       -i to specify maximum number of iterations at each point (default 1000)\n"
+	.align 8
+.LC7:
+	.string	"       -w to specify the size of the image to compute (default 800x800 elements)\n"
+	.align 8
+.LC8:
+	.string	"       -c to specify the center x0+iy0 of the square to compute (default origin)\n"
+	.align 8
+.LC9:
+	.string	"       -s to specify the size of the square to compute (default 2, i.e. size 4 by 4)\n"
+	.section	.rodata.str1.1,"aMS",@progbits,1
+.LC10:
+	.string	"\n"
+.LC11:
+	.string	"Mandelbrot program\n"
+.LC13:
+	.string	"center = (%g, %g), size = %g\n"
+.LC14:
+	.string	"maximum iterations = %d\n"
+.LC15:
+	.string	"Total execution time"
+.LC16:
+	.string	"%s: %0.6fs\n"
+	.text
+	.globl	main
+	.type	main, @function
+main:
+.LFB54:
+	.cfi_startproc
+	pushq	%r15
+	.cfi_def_cfa_offset 16
+	.cfi_offset 15, -16
+	pushq	%r14
+	.cfi_def_cfa_offset 24
+	.cfi_offset 14, -24
+	pushq	%r13
+	.cfi_def_cfa_offset 32
+	.cfi_offset 13, -32
+	pushq	%r12
+	.cfi_def_cfa_offset 40
+	.cfi_offset 12, -40
+	pushq	%rbp
+	.cfi_def_cfa_offset 48
+	.cfi_offset 6, -48
+	pushq	%rbx
+	.cfi_def_cfa_offset 56
+	.cfi_offset 3, -56
+	subq	$56, %rsp
+	.cfi_def_cfa_offset 112
+	movl	%edi, %r14d
+	cmpl	$1, %edi
+	jle	.L34
+	movq	%rsi, %rbp
+	movl	$1, %ebx
+	vxorpd	%xmm6, %xmm6, %xmm6
+	vmovsd	%xmm6, 16(%rsp)
+	vmovsd	%xmm6, 8(%rsp)
+	vmovsd	.LC3(%rip), %xmm5
+	vmovsd	%xmm5, 32(%rsp)
+	movl	$800, %r13d
+	movl	$800, 28(%rsp)
+	movl	$1000, %r15d
+.L31:
+	movslq	%ebx, %rax
+	leaq	0(,%rax,8), %r12
+	movq	0(%rbp,%rax,8), %rax
+	cmpb	$45, (%rax)
+	jne	.L24
+	movzbl	1(%rax), %edx
+	cmpb	$105, %dl
+	jne	.L25
+	cmpb	$0, 2(%rax)
+	jne	.L26
+	addl	$1, %ebx
+	movq	8(%rbp,%r12), %rdi
+	movl	$10, %edx
+	movl	$0, %esi
+	call	strtol
+	movl	%eax, %r15d
+	jmp	.L27
+.L25:
+	cmpb	$119, %dl
+	jne	.L26
+	cmpb	$0, 2(%rax)
+	jne	.L28
+	addl	$1, %ebx
+	movq	8(%rbp,%r12), %rdi
+	movl	$10, %edx
+	movl	$0, %esi
+	call	strtol
+	movl	%eax, 28(%rsp)
+	movl	%eax, %r13d
+	jmp	.L27
+.L26:
+	movzbl	1(%rax), %edx
+	cmpb	$115, %dl
+	jne	.L29
+	cmpb	$0, 2(%rax)
+	jne	.L24
+	addl	$1, %ebx
+	movq	8(%rbp,%r12), %rdi
+	movl	$0, %esi
+	call	strtod
+	vmovsd	%xmm0, 32(%rsp)
+	jmp	.L27
+.L29:
+	cmpb	$99, %dl
+	jne	.L24
+	cmpb	$0, 2(%rax)
+	jne	.L24
+	movq	8(%rbp,%r12), %rdi
+	movl	$0, %esi
+	call	strtod
+	vmovsd	%xmm0, 8(%rsp)
+	addl	$2, %ebx
+	movq	16(%rbp,%r12), %rdi
+	movl	$0, %esi
+	call	strtod
+	vmovsd	%xmm0, 16(%rsp)
+	jmp	.L27
+.L24:
+	movq	0(%rbp), %rcx
+	movl	$.LC4, %edx
+	movl	$1, %esi
+	movq	stderr(%rip), %rdi
+	movl	$0, %eax
+	call	__fprintf_chk
+	movl	$.LC5, %edx
+	movl	$1, %esi
+	movq	stderr(%rip), %rdi
+	movl	$0, %eax
+	call	__fprintf_chk
+	movl	$.LC6, %edx
+	movl	$1, %esi
+	movq	stderr(%rip), %rdi
+	movl	$0, %eax
+	call	__fprintf_chk
+	movl	$.LC7, %edx
+	movl	$1, %esi
+	movq	stderr(%rip), %rdi
+	movl	$0, %eax
+	call	__fprintf_chk
+	movl	$.LC8, %edx
+	movl	$1, %esi
+	movq	stderr(%rip), %rdi
+	movl	$0, %eax
+	call	__fprintf_chk
+	movl	$.LC9, %edx
+	movl	$1, %esi
+	movq	stderr(%rip), %rdi
+	movl	$0, %eax
+	call	__fprintf_chk
+	movl	$1, %eax
+	jmp	.L37
+.L27:
+	addl	$1, %ebx
+	cmpl	%ebx, %r14d
+	jg	.L31
+	jmp	.L23
+.L34:
+	vxorpd	%xmm1, %xmm1, %xmm1
+	vmovsd	%xmm1, 16(%rsp)
+	vmovsd	%xmm1, 8(%rsp)
+	vmovsd	.LC3(%rip), %xmm1
+	vmovsd	%xmm1, 32(%rsp)
+	movl	$800, %r13d
+	movl	$800, 28(%rsp)
+	movl	$1000, %r15d
+.L23:
+	vmovsd	8(%rsp), %xmm7
+	vmovsd	32(%rsp), %xmm4
+	vsubsd	%xmm4, %xmm7, %xmm5
+	vmovsd	%xmm5, 32(%rsp)
+	vaddsd	%xmm7, %xmm4, %xmm2
+	vmovsd	%xmm2, 40(%rsp)
+	vmovsd	16(%rsp), %xmm7
+	vsubsd	%xmm4, %xmm7, %xmm3
+	vmovsd	%xmm3, 8(%rsp)
+	vaddsd	%xmm7, %xmm4, %xmm1
+	vmovsd	%xmm1, 16(%rsp)
+	movl	$.LC10, %edx
+	movl	$1, %esi
+	movq	stdout(%rip), %rdi
+	movl	$0, %eax
+	call	__fprintf_chk
+	movl	$.LC11, %edx
+	movl	$1, %esi
+	movq	stdout(%rip), %rdi
+	movl	$0, %eax
+	call	__fprintf_chk
+	vmovsd	40(%rsp), %xmm2
+	vmovsd	32(%rsp), %xmm5
+	vsubsd	%xmm5, %xmm2, %xmm7
+	vmovsd	%xmm7, 40(%rsp)
+	vmovsd	.LC12(%rip), %xmm1
+	vmovsd	16(%rsp), %xmm6
+	vaddsd	8(%rsp), %xmm6, %xmm3
+	vaddsd	%xmm2, %xmm5, %xmm0
+	vmulsd	%xmm1, %xmm0, %xmm0
+	vmulsd	%xmm7, %xmm1, %xmm2
+	vmulsd	%xmm1, %xmm3, %xmm1
+	movl	$.LC13, %edx
+	movl	$1, %esi
+	movq	stdout(%rip), %rdi
+	movl	$3, %eax
+	call	__fprintf_chk
+	movl	%r15d, %ecx
+	movl	$.LC14, %edx
+	movl	$1, %esi
+	movq	stdout(%rip), %rdi
+	movl	$0, %eax
+	call	__fprintf_chk
+	movl	$.LC10, %edx
+	movl	$1, %esi
+	movq	stdout(%rip), %rdi
+	movl	$0, %eax
+	call	__fprintf_chk
+	movslq	%r13d, %rdi
+	salq	$3, %rdi
+	call	malloc
+	movq	%rax, %r14
+	testl	%r13d, %r13d
+	jle	.L32
+	movslq	28(%rsp), %r12
+	salq	$2, %r12
+	movq	%rax, %rbx
+	leal	-1(%r13), %eax
+	leaq	8(,%rax,8), %rbp
+	addq	%r14, %rbp
+.L33:
+	movq	%r12, %rdi
+	call	malloc
+	movq	%rax, (%rbx)
+	addq	$8, %rbx
+	cmpq	%rbp, %rbx
+	jne	.L33
+.L32:
+	vxorpd	%xmm0, %xmm0, %xmm0
+	vcvtsi2sd	28(%rsp), %xmm0, %xmm0
+	vmovsd	40(%rsp), %xmm6
+	vdivsd	%xmm0, %xmm6, %xmm1
+	vmovq	%xmm1, %rbp
+	vmovsd	16(%rsp), %xmm2
+	vsubsd	8(%rsp), %xmm2, %xmm0
+	vxorpd	%xmm1, %xmm1, %xmm1
+	vcvtsi2sd	%r13d, %xmm1, %xmm1
+	vdivsd	%xmm1, %xmm0, %xmm5
+	vmovq	%xmm5, %rbx
+	movl	$0, %eax
+	call	getusec_
+	vmovq	%xmm0, %r12
+	movq	%r14, %rcx
+	movl	%r15d, %edx
+	vmovq	%rbx, %xmm3
+	vmovq	%rbp, %xmm2
+	vmovsd	8(%rsp), %xmm1
+	vmovsd	32(%rsp), %xmm0
+	movl	28(%rsp), %esi
+	movl	%r13d, %edi
+	call	mandelbrot
+	movl	$0, %eax
+	call	getusec_
+	vmovq	%r12, %xmm3
+	vsubsd	%xmm3, %xmm0, %xmm0
+	vdivsd	.LC2(%rip), %xmm0, %xmm0
+	movl	$.LC15, %edx
+	movl	$.LC16, %esi
+	movl	$1, %edi
+	movl	$1, %eax
+	call	__printf_chk
+	movl	$0, %eax
+	jmp	.L37
+.L28:
+	movzbl	1(%rax), %edx
+	jmp	.L29
+.L37:
+	addq	$56, %rsp
+	.cfi_def_cfa_offset 56
+	popq	%rbx
+	.cfi_def_cfa_offset 48
+	popq	%rbp
+	.cfi_def_cfa_offset 40
+	popq	%r12
+	.cfi_def_cfa_offset 32
+	popq	%r13
+	.cfi_def_cfa_offset 24
+	popq	%r14
+	.cfi_def_cfa_offset 16
+	popq	%r15
+	.cfi_def_cfa_offset 8
+	ret
+	.cfi_endproc
+.LFE54:
+	.size	main, .-main
+	.comm	col,4,4
+	.comm	row,4,4
+	.section	.rodata.cst8,"aM",@progbits,8
+	.align 8
+.LC1:
+	.long	0
+	.long	1074790400
+	.align 8
+.LC2:
+	.long	0
+	.long	1093567616
+	.align 8
+.LC3:
+	.long	0
+	.long	1073741824
+	.align 8
+.LC12:
+	.long	0
+	.long	1071644672
+	.ident	"GCC: (Ubuntu 4.9.3-5ubuntu1~14.04) 4.9.3"
+	.section	.note.GNU-stack,"",@progbits

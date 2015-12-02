@@ -53,8 +53,10 @@ void end_event_loop () {
 
 
 void start_horizontal_dependences(int dependence) {
+    printf("DEPENDENCE %d\n", dependence);
     for (int i=0; i<omp_get_num_threads(); i++){
-	Extrae_event (TASK_DEPENDENCES, dependence+i);
+	printf("DEPENDENCE_COUNT %d\n", dependence-i);
+	Extrae_event (TASK_DEPENDENCES, dependence-i);
     }
 }
 
@@ -62,7 +64,7 @@ void start_horizontal_dependences(int dependence) {
 void start_vertical_dependences() {
    int aux;
    if(count_dependences==0){
-      Extrae_event (TASK_DEPENDENCES, count-2);
+      Extrae_event (TASK_DEPENDENCES, count-1);
    }else{
       if(count_tasks_loop==0){
       	for (int i=1; i<=count_dependences; i++){
@@ -91,7 +93,7 @@ void start_vertical_dependences() {
 }
 
 void set_count_dependences(int dependence){
-     count_dependences=count-(dependence+count_tasks_loop+thread_count+omp_get_num_threads()-1);
+     count_dependences=count-(dependence+count_tasks_loop+thread_count);
      printf("count_dependences %d\n", count_dependences);
      printf("count %d\n",thread_count );
      thread_count++;
@@ -133,7 +135,70 @@ void end_event_task(){
     Extrae_event (TASK, 0);
 }
 
+void function_out(int depend){
+   bool trobat  = false;
+   int index = -1;
+   for (int i=0; i<miniomp_task_dependences.index; i++){
+	if (miniomp_task_dependences.depend_in[i]==depend){
+            Extrae_event (TASK_DEPENDENCES, miniomp_task_dependences.task_in[i]);
+	    trobat = true;
+	    index = i;
+	}
+	if (miniomp_task_dependences.depend_out[i]==depend){
+	    index = i;
+	}
+   }
+   if (index == -1){
+	miniomp_task_dependences.index++;
+	index = miniomp_task_dependences.index;
+   }
+
+   miniomp_task_dependences.task_out[index] = count;
+   miniomp_task_dependences.depend_out[index] = depend;
+  
+   if(!trobat){
+	miniomp_task_dependences.task_in[index] = -1;
+	miniomp_task_dependences.depend_in[index] = -1;
+   }
+}
 
 
+void function_in(int depend){
+   bool trobat  = false;
+   int index = -1;
+   for (int i=0; i<miniomp_task_dependences.index; i++){
+	if (miniomp_task_dependences.depend_out[i]==depend){
+            Extrae_event (TASK_DEPENDENCES, miniomp_task_dependences.task_out[i]);
+	    trobat = true;
+	    index = i;
+	}
+	if (miniomp_task_dependences.depend_in[i]==depend){
+	    index = i;
+	}
+   }
+   if (index == -1){
+	miniomp_task_dependences.index++;
+	index = miniomp_task_dependences.index;
+   }
 
+   miniomp_task_dependences.task_in[index] = count;
+   miniomp_task_dependences.depend_in[index] = depend;
+  
+   if(!trobat){
+	miniomp_task_dependences.task_out[index] = -1;
+	miniomp_task_dependences.depend_out[index] = -1;
+   }
+}
+		
 
+void set_task_dependences (void **depend){
+   size_t ndepend = (uintptr_t)depend[0];
+   size_t nout = (uintptr_t)depend[1];
+   size_t i=0;
+   for (; i<nout; i++){
+	function_out(depend[i+2]);
+   }
+   for (; i<ndepend; i++){
+	function_in(depend[i+2]);
+   }
+}

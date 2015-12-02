@@ -3,7 +3,7 @@
 USAGE="\n USAGE: ./run-dim_sequential.sh prog num_threads\n
         prog        -> omp program name\n"
 
-if (test $# -lt 2)
+if (test $# -lt 1 || test $# -gt 1)
 then
         echo -e $USAGE
         exit 0

@@ -7,6 +7,7 @@
 #include <omp.h>	/* OpenMP */
 
 long result=0;
+long caca=0;
 
 void foo() {
 #pragma omp parallel 
@@ -15,11 +16,11 @@ void foo() {
   
     #pragma omp for schedule(dynamic,3) 
     for (long i = 0; i < 10; i++){
-	#pragma omp task shared(result) depend(in:result) depend(out:result)
+	#pragma omp task shared(result) depend(in:result) depend(out:caca)
 	{
         result++;}
-	#pragma omp task depend(in: result)
-        result++;
+	#pragma omp task depend(in: caca) depend(inout: result)
+        caca++;
 }
 
    #pragma omp taskwait

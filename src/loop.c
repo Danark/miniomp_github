@@ -119,7 +119,10 @@ bool
 GOMP_loop_dynamic_start (long start, long end, long incr, long chunk_size,
                          long *istart, long *iend)
 {
-  
+  #if _EXTRAE_
+  end_event_thread();
+  #endif
+  GOMP_barrier_No_Extrae();
   if (miniomp_loop.isStart==(false)){
 	printf("Inicialitzo loop dynamic\n");
   	miniomp_loop.left= end;
@@ -136,9 +139,7 @@ GOMP_loop_dynamic_start (long start, long end, long incr, long chunk_size,
 	init_loop_dependences();
         //init_critical_dependences();
   }
-  #if _EXTRAE_
-  end_event_thread();
-  #endif
+
   GOMP_barrier_No_Extrae();
   bool ret=GOMP_loop_dynamic_next(istart, iend);  
   
@@ -183,9 +184,14 @@ GOMP_loop_end (void) {
 
 void
 GOMP_loop_end_nowait (void) {
-  //printf("TBI: Finishing a for worksharing construct with non static schedule, with nowait clause\n");
-  miniomp_loop.count=0;
-  miniomp_loop.isStart=(false);
+  printf("TBI: Finishing a for worksharing construct with non static schedule, with nowait clause\n");
+  miniomp_loop.count2++;
+  if (miniomp_loop.count2==omp_get_num_threads()){
+	miniomp_loop.count2=0;
+	miniomp_loop.isStart=(false);
+  }
+  start_event_thread();
+  start_horizontal_dependences(miniomp_loop.dependences);
  
  
 }

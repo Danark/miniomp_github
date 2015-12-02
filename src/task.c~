@@ -52,6 +52,13 @@ GOMP_task (void (*fn) (void *), void *data, void (*cpyfn) (void *, void *),
            void **depend)
 {
 
+	size_t ndepend = (uintptr_t)depend[0];
+	size_t nout = (uintptr_t)depend[1];
+	for (size_t i=0; i<ndepend+2; i++){
+		printf("depend>%d\n", depend[i]);
+	}
+	printf("-------------------------------\n");
+	//printf("flags %d\n", flags);
 	if (if_clause){
     	    if (__builtin_expect (cpyfn != NULL, 0))
         	{
@@ -60,14 +67,18 @@ GOMP_task (void (*fn) (void *), void *data, void (*cpyfn) (void *, void *),
 						& ~(uintptr_t) (arg_align - 1));
 			cpyfn (arg, data);
 			printf("execute 1\n");
+			start_event_task();
 			fn(arg);
+			end_event_task();
                 }
             else 
 		{
 			char * arg =  malloc(sizeof(char) * (arg_size + arg_align - 1));
 			memcpy(arg, data, arg_size);
 			printf("execute 2\n");
+			start_event_task();
 			fn(arg);
+			end_event_task();
 		}
 	}
 	else{
@@ -78,12 +89,16 @@ GOMP_task (void (*fn) (void *), void *data, void (*cpyfn) (void *, void *),
          	                       & ~(uintptr_t) (arg_align - 1));
          	 cpyfn (arg, data);
 		 printf("execute 3\n");
+		 start_event_task();
                  fn(arg);
+		 end_event_task();
 		 
        	 	}
     		else{
 			printf("execute 4\n");
+			start_event_task();
         		fn(data);
+			end_event_task();
 		}
     	}
 }

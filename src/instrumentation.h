@@ -49,5 +49,12 @@ void init_hash();
 //evento que busca en el hash
 int found_hash(int id);
 
-//evento que a;ade en el hash
+//evento que anade en el hash
 int insert_hash(int id);
+
+//crea las dependencias de las tasks
+void set_task_dependences (void **depend);
+
+void function_in(int depend);
+
+void function_out(int depend);
