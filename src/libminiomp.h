@@ -47,6 +47,8 @@ extern pthread_cond_t condition;
 
 extern miniomp_hash_t miniomp_hash;
 
+extern miniomp_task_dependences_t miniomp_task_dependences;
+
 #define MAXELEMENTS_TQ 128
 
 

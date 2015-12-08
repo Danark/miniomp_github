@@ -135,6 +135,7 @@ void end_event_task(){
     Extrae_event (TASK, 0);
 }
 
+/*
 void function_out(int depend){
    bool trobat  = false;
    int index = -1;
@@ -189,6 +190,114 @@ void function_in(int depend){
 	miniomp_task_dependences.depend_out[index] = -1;
    }
 }
+
+*/
+
+
+
+
+void function_in(int depend){
+   int trobat = 0;
+   printf("dins_in\n");
+   for (int i=0; i<miniomp_task_dependences.index; i++){
+	//printf("dins1_in\n");
+	if (miniomp_task_dependences.depend[i].dependencia==depend){
+		printf("dins2_in\n");
+		trobat = 1;
+		int tree_index = miniomp_task_dependences.depend[i].tree_index;
+		printf("tree_in %d\n", miniomp_task_dependences.depend[i].tree_index);
+		if(tree_index%2==0){ 
+			tree_index = miniomp_task_dependences.depend[i].tree_index-1;
+			printf("dins3_in\n");
+		}
+		else{
+			tree_index = miniomp_task_dependences.depend[i].tree_index;
+			miniomp_task_dependences.depend[i].tree_index++;
+			//printf("dins4_in\n");
+		}
+		printf("tree_in %d\n", tree_index);
+		printf("index_in %d\n", miniomp_task_dependences.depend[i].index);
+		for (int u=0; u<miniomp_task_dependences.depend[i].index; u++){
+			//printf("dins5_in\n");
+			if(miniomp_task_dependences.depend[i].depend[u].level==tree_index){
+				printf("_in------------------------------------\n");
+				Extrae_event (TASK_DEPENDENCES, miniomp_task_dependences.depend[i].depend[u].task);
+			}
+			//printf("dins7_in\n");
+		}
+		//printf("dins8_in\n");
+		int index = miniomp_task_dependences.depend[i].index;
+		miniomp_task_dependences.depend[i].index++;
+		miniomp_task_dependences.depend[i].depend[index].level=tree_index+1;
+		miniomp_task_dependences.depend[i].depend[index].task=count;
+		//printf("dins9_in\n");
+	}
+	
+   }
+   if (!trobat){
+        printf("trobat_in\n");
+	int index_trobat = miniomp_task_dependences.index;
+	miniomp_task_dependences.index++;
+	printf("index_in %d\n", miniomp_task_dependences.index);
+	miniomp_task_dependences.depend[index_trobat].depend = (miniomp_task_node_t *)malloc(MAX_DEPENDENCES_NODES*sizeof(miniomp_task_node_t));
+	miniomp_task_dependences.depend[index_trobat].depend[0].task = count;
+	miniomp_task_dependences.depend[index_trobat].depend[0].level = 0;
+	miniomp_task_dependences.depend[index_trobat].index = 1;
+	miniomp_task_dependences.depend[index_trobat].tree_index=0;
+	miniomp_task_dependences.depend[index_trobat].dependencia = depend;
+   }
+}
+
+
+
+void function_out(int depend){
+   int trobat = 0;
+   printf("dins_out\n");
+   for (int i=0; i<miniomp_task_dependences.index; i++){
+	if (miniomp_task_dependences.depend[i].dependencia==depend){
+		printf("dins2_out\n");
+		trobat = 1;
+		int tree_index = miniomp_task_dependences.depend[i].tree_index;
+		printf("tree_out %d\n", miniomp_task_dependences.depend[i].tree_index);
+		if(tree_index%2!=0){
+			tree_index = miniomp_task_dependences.depend[i].tree_index-1;
+		}
+		else{
+			tree_index = miniomp_task_dependences.depend[i].tree_index;
+			miniomp_task_dependences.depend[i].tree_index++;
+		}
+		printf("tree_out %d\n", tree_index);
+		printf("index_out %d\n", miniomp_task_dependences.depend[i].index);
+		for (int u=0; u<miniomp_task_dependences.depend[i].index; u++){
+			if(miniomp_task_dependences.depend[i].depend[u].level==tree_index){
+				printf("_out------------------------------------\n");
+				Extrae_event (TASK_DEPENDENCES, miniomp_task_dependences.depend[i].depend[u].task);
+			}
+		}
+		int index = miniomp_task_dependences.depend[i].index;
+		miniomp_task_dependences.depend[i].index++;
+		miniomp_task_dependences.depend[i].depend[index].level=tree_index+1;
+		miniomp_task_dependences.depend[i].depend[index].task=count;
+	}
+	
+   }
+   if (!trobat){
+	printf("trobat_out\n");
+	int index_trobat = miniomp_task_dependences.index;
+	miniomp_task_dependences.index++;
+	printf("index_out %d\n", miniomp_task_dependences.index);
+	miniomp_task_dependences.depend[index_trobat].depend = (miniomp_task_node_t *)malloc(MAX_DEPENDENCES_NODES*sizeof(miniomp_task_node_t));
+	miniomp_task_dependences.depend[index_trobat].depend[0].task = count;
+	printf("test1_out\n");
+	miniomp_task_dependences.depend[index_trobat].depend[0].level = 1;
+	miniomp_task_dependences.depend[index_trobat].index = 1;
+	miniomp_task_dependences.depend[index_trobat].tree_index=1;
+	miniomp_task_dependences.depend[index_trobat].dependencia = depend;
+   }
+}
+	
+				
+
 		
 
 void set_task_dependences (void **depend){

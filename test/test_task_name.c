@@ -19,7 +19,13 @@ void foo() {
 	#pragma omp task shared(result) depend(in:result) depend(out:caca)
 	{
         result++;}
-	#pragma omp task depend(in: caca) depend(inout: result)
+	#pragma omp task depend(in: caca)
+        caca++;
+	#pragma omp task depend(in: caca)
+        caca++;
+	#pragma omp task depend(in: caca)
+        caca++;
+	#pragma omp task depend(out: caca)
         caca++;
 }
 

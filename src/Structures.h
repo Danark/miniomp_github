@@ -34,3 +34,35 @@ typedef struct {
     int *hash;
     int index;
 } miniomp_hash_t;
+
+typedef struct {
+   int level;
+   int task;
+} miniomp_task_node_t;
+
+typedef struct {
+   miniomp_task_node_t *depend;
+   int index;
+   int tree_index;
+   int dependencia;
+} miniomp_task_tree_t;
+
+typedef struct {
+   miniomp_task_tree_t *depend;
+   int index;
+} miniomp_task_dependences_t;
+
+/*typedef struct {
+   int index;
+   int *depend_out;
+   int *depend_in;
+   int *task_out;
+   int *task_in;
+} miniomp_task_dependences_t;*/
+
+
+
+
+
+
+

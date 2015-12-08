@@ -1,8 +1,10 @@
 // Extrae Constants
-#define  _EXTRAE_   	 1
-#define MAX_THREADS 	32
-#define MAX_CRITICALS 	100
-#define MAX_TASK 	100
+#define  _EXTRAE_   	 	1
+#define MAX_THREADS 		32
+#define MAX_CRITICALS 		100
+#define MAX_TASK 		100
+#define MAX_DEPENDENCES 	100
+#define MAX_DEPENDENCES_NODES 	100
 
 
 #define ws_STATIC 	0

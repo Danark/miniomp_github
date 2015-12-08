@@ -19,6 +19,7 @@ int count_max_inner_loop;
 int count_inner_loop;
 miniomp_hash_t miniomp_hash;
 int thread_count;
+miniomp_task_dependences_t miniomp_task_dependences;
 
 
 
@@ -52,6 +53,11 @@ init_miniomp(void) {
   pthread_cond_init(&condition, NULL);
   init_hash();
   thread_count=0;
+  miniomp_task_dependences.index=0;
+  miniomp_task_dependences.depend = (miniomp_task_tree_t *)malloc(MAX_DEPENDENCES*sizeof(miniomp_task_tree_t));
+  /*miniomp_task_dependences.depend_in = (int *)malloc(MAX_DEPENDENCES*sizeof(int));
+  miniomp_task_dependences.task_out = (int *)malloc(MAX_DEPENDENCES*sizeof(int));
+  miniomp_task_dependences.task_in = (int *)malloc(MAX_DEPENDENCES*sizeof(int));*/
 
   // Initialize Pthread data structures and thread-specific data
   // Initialize OpenMP default lock and default barrier

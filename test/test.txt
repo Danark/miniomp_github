@@ -1,0 +1,573 @@
+Welcome to Extrae 3.1.0 (revision 3316 based on extrae/trunk)
+Extrae: Parsing the configuration file (./extrae.xml) begins
+Extrae: Tracing package is located on /Soft/extrae/3.0.2
+Extrae: Generating intermediate files for Paraver traces.
+Extrae: Warning! <pthread> tag will be ignored. This library does not support OpenMP.
+Extrae: Warning! <openmp> tag will be ignored. This library does not support pthread.
+Extrae: <cpu> tag at <counters> level will be ignored. This library does not support CPU HW.
+Extrae: Resource usage is disabled at flush buffer.
+Extrae: Memory usage is disabled at flush buffer.
+Extrae: Tracing buffer can hold 500000 events
+Extrae: Circular buffer disabled.
+Extrae: Dynamic memory instrumentation is disabled.
+Extrae: Basic I/O memory instrumentation is disabled.
+Extrae: Parsing the configuration file (./extrae.xml) has ended
+Extrae: Intermediate traces will be stored in /home/tareador/codes/TAREADOR/miniomp_Dani/test
+Extrae: Tracing mode is set to: Detail.
+Extrae: Successfully initiated with 1 tasks
+
+mini-omp is being initialized by Dani
+Starting Extrae
+Setting nthreads_var ICV to 3
+Starting a parallel region using 3 threads
+MAX 32 threads
+0
+id 0
+1
+id 1
+2
+id 2
+Inicialitzo loop dynamic
+DEPENDENCE 3
+DEPENDENCE_COUNT 3
+DEPENDENCE_COUNT 2
+DEPENDENCE_COUNT 1
+GRAN
+execute 2
+dins_out
+trobat_out
+index_out 1
+test1_out
+dins_in
+trobat_in
+index_in 2
+execute 2
+dins_in
+dins2_in
+tree_in 1
+dins3_in
+tree_in 0
+index_in 1
+execute 2
+dins_in
+dins2_in
+tree_in 1
+dins3_in
+tree_in 0
+index_in 2
+execute 2
+dins_in
+dins2_in
+tree_in 1
+dins3_in
+tree_in 0
+index_in 3
+execute 2
+dins_out
+dins2_out
+tree_out 1
+tree_out 1
+index_out 4
+_out------------------------------------
+_out------------------------------------
+_out------------------------------------
+_out------------------------------------
+dins_in
+dins2_in
+tree_in 0
+dins3_in
+tree_in -1
+index_in 1
+execute 2
+dins_in
+dins2_in
+tree_in 2
+dins3_in
+tree_in 1
+index_in 5
+_in------------------------------------
+_in------------------------------------
+_in------------------------------------
+_in------------------------------------
+execute 2
+dins_in
+dins2_in
+tree_in 2
+dins3_in
+tree_in 1
+index_in 6
+_in------------------------------------
+_in------------------------------------
+_in------------------------------------
+_in------------------------------------
+execute 2
+dins_in
+dins2_in
+tree_in 2
+dins3_in
+tree_in 1
+index_in 7
+_in------------------------------------
+_in------------------------------------
+_in------------------------------------
+_in------------------------------------
+execute 2
+dins_out
+dins2_out
+tree_out 2
+tree_out 2
+index_out 8
+_out------------------------------------
+_out------------------------------------
+_out------------------------------------
+_out------------------------------------
+dins_in
+dins2_in
+tree_in 0
+dins3_in
+tree_in -1
+index_in 2
+execute 2
+dins_in
+dins2_in
+tree_in 3
+dins3_in
+tree_in 2
+index_in 9
+_in------------------------------------
+_in------------------------------------
+_in------------------------------------
+_in------------------------------------
+execute 2
+dins_in
+dins2_in
+tree_in 3
+dins3_in
+tree_in 2
+index_in 10
+_in------------------------------------
+_in------------------------------------
+_in------------------------------------
+_in------------------------------------
+execute 2
+dins_in
+dins2_in
+tree_in 3
+dins3_in
+tree_in 2
+index_in 11
+_in------------------------------------
+_in------------------------------------
+_in------------------------------------
+_in------------------------------------
+DEPENDENCE 3
+DEPENDENCE_COUNT 3
+DEPENDENCE_COUNT 2
+DEPENDENCE_COUNT 1
+GRAN
+execute 2
+dins_out
+dins2_out
+tree_out 3
+tree_out 3
+index_out 12
+_out------------------------------------
+_out------------------------------------
+_out------------------------------------
+_out------------------------------------
+dins_in
+dins2_in
+tree_in 0
+dins3_in
+tree_in -1
+index_in 3
+execute 2
+dins_in
+dins2_in
+tree_in 4
+dins3_in
+tree_in 3
+index_in 13
+_in------------------------------------
+_in------------------------------------
+_in------------------------------------
+_in------------------------------------
+execute 2
+dins_in
+dins2_in
+tree_in 4
+dins3_in
+tree_in 3
+index_in 14
+_in------------------------------------
+_in------------------------------------
+_in------------------------------------
+_in------------------------------------
+execute 2
+dins_in
+dins2_in
+tree_in 4
+dins3_in
+tree_in 3
+index_in 15
+_in------------------------------------
+_in------------------------------------
+_in------------------------------------
+_in------------------------------------
+execute 2
+dins_out
+dins2_out
+tree_out 4
+tree_out 4
+index_out 16
+_out------------------------------------
+_out------------------------------------
+_out------------------------------------
+_out------------------------------------
+dins_in
+dins2_in
+tree_in 0
+dins3_in
+tree_in -1
+index_in 4
+execute 2
+dins_in
+dins2_in
+tree_in 5
+dins3_in
+tree_in 4
+index_in 17
+_in------------------------------------
+_in------------------------------------
+_in------------------------------------
+_in------------------------------------
+execute 2
+dins_in
+dins2_in
+tree_in 5
+dins3_in
+tree_in 4
+index_in 18
+_in------------------------------------
+_in------------------------------------
+_in------------------------------------
+_in------------------------------------
+execute 2
+dins_in
+dins2_in
+tree_in 5
+dins3_in
+tree_in 4
+index_in 19
+_in------------------------------------
+_in------------------------------------
+_in------------------------------------
+_in------------------------------------
+execute 2
+dins_out
+dins2_out
+tree_out 5
+tree_out 5
+index_out 20
+_out------------------------------------
+_out------------------------------------
+_out------------------------------------
+_out------------------------------------
+dins_in
+dins2_in
+tree_in 0
+dins3_in
+tree_in -1
+index_in 5
+execute 2
+dins_in
+dins2_in
+tree_in 6
+dins3_in
+tree_in 5
+index_in 21
+_in------------------------------------
+_in------------------------------------
+_in------------------------------------
+_in------------------------------------
+execute 2
+dins_in
+dins2_in
+tree_in 6
+dins3_in
+tree_in 5
+index_in 22
+_in------------------------------------
+_in------------------------------------
+_in------------------------------------
+_in------------------------------------
+execute 2
+dins_in
+dins2_in
+tree_in 6
+dins3_in
+tree_in 5
+index_in 23
+_in------------------------------------
+_in------------------------------------
+_in------------------------------------
+_in------------------------------------
+DEPENDENCE 3
+DEPENDENCE_COUNT 3
+DEPENDENCE_COUNT 2
+DEPENDENCE_COUNT 1
+GRAN
+execute 2
+dins_out
+dins2_out
+tree_out 6
+tree_out 6
+index_out 24
+_out------------------------------------
+_out------------------------------------
+_out------------------------------------
+_out------------------------------------
+dins_in
+dins2_in
+tree_in 0
+dins3_in
+tree_in -1
+index_in 6
+execute 2
+dins_in
+dins2_in
+tree_in 7
+dins3_in
+tree_in 6
+index_in 25
+_in------------------------------------
+_in------------------------------------
+_in------------------------------------
+_in------------------------------------
+execute 2
+dins_in
+dins2_in
+tree_in 7
+dins3_in
+tree_in 6
+index_in 26
+_in------------------------------------
+_in------------------------------------
+_in------------------------------------
+_in------------------------------------
+execute 2
+dins_in
+dins2_in
+tree_in 7
+dins3_in
+tree_in 6
+index_in 27
+_in------------------------------------
+_in------------------------------------
+_in------------------------------------
+_in------------------------------------
+execute 2
+dins_out
+dins2_out
+tree_out 7
+tree_out 7
+index_out 28
+_out------------------------------------
+_out------------------------------------
+_out------------------------------------
+_out------------------------------------
+dins_in
+dins2_in
+tree_in 0
+dins3_in
+tree_in -1
+index_in 7
+execute 2
+dins_in
+dins2_in
+tree_in 8
+dins3_in
+tree_in 7
+index_in 29
+_in------------------------------------
+_in------------------------------------
+_in------------------------------------
+_in------------------------------------
+execute 2
+dins_in
+dins2_in
+tree_in 8
+dins3_in
+tree_in 7
+index_in 30
+_in------------------------------------
+_in------------------------------------
+_in------------------------------------
+_in------------------------------------
+execute 2
+dins_in
+dins2_in
+tree_in 8
+dins3_in
+tree_in 7
+index_in 31
+_in------------------------------------
+_in------------------------------------
+_in------------------------------------
+_in------------------------------------
+execute 2
+dins_out
+dins2_out
+tree_out 8
+tree_out 8
+index_out 32
+_out------------------------------------
+_out------------------------------------
+_out------------------------------------
+_out------------------------------------
+dins_in
+dins2_in
+tree_in 0
+dins3_in
+tree_in -1
+index_in 8
+execute 2
+dins_in
+dins2_in
+tree_in 9
+dins3_in
+tree_in 8
+index_in 33
+_in------------------------------------
+_in------------------------------------
+_in------------------------------------
+_in------------------------------------
+execute 2
+dins_in
+dins2_in
+tree_in 9
+dins3_in
+tree_in 8
+index_in 34
+_in------------------------------------
+_in------------------------------------
+_in------------------------------------
+_in------------------------------------
+execute 2
+dins_in
+dins2_in
+tree_in 9
+dins3_in
+tree_in 8
+index_in 35
+_in------------------------------------
+_in------------------------------------
+_in------------------------------------
+_in------------------------------------
+DEPENDENCE 3
+DEPENDENCE_COUNT 3
+DEPENDENCE_COUNT 2
+DEPENDENCE_COUNT 1
+PETIT
+execute 2
+dins_out
+dins2_out
+tree_out 9
+tree_out 9
+index_out 36
+_out------------------------------------
+_out------------------------------------
+_out------------------------------------
+_out------------------------------------
+dins_in
+dins2_in
+tree_in 0
+dins3_in
+tree_in -1
+index_in 9
+execute 2
+dins_in
+dins2_in
+tree_in 10
+dins3_in
+tree_in 9
+index_in 37
+_in------------------------------------
+_in------------------------------------
+_in------------------------------------
+_in------------------------------------
+execute 2
+dins_in
+dins2_in
+tree_in 10
+dins3_in
+tree_in 9
+index_in 38
+_in------------------------------------
+_in------------------------------------
+_in------------------------------------
+_in------------------------------------
+execute 2
+dins_in
+dins2_in
+tree_in 10
+dins3_in
+tree_in 9
+index_in 39
+_in------------------------------------
+_in------------------------------------
+_in------------------------------------
+_in------------------------------------
+count_dependences 4
+count 0
+ite = 13
+resi = 5
+contador= 1
+TBI: Entered in taskwait, there should be no pending tasks, so I proceed
+result = 10
+count_dependences 4
+count 1
+ite = 13
+resi = 5
+TBI: Entered in taskwait, there should be no pending tasks, so I proceed
+result = 10
+count_dependences 4
+count 2
+ite = 13
+resi = 5
+TBI: Entered in taskwait, there should be no pending tasks, so I proceed
+result = 10
+Reaching the end of the parallel region
+result = 10
+Extrae: Intermediate raw trace file created : /home/tareador/codes/TAREADOR/miniomp_Dani/test/set-0/TRACE.0000004281000000000000.mpit
+Extrae: Intermediate raw sym file created : /home/tareador/codes/TAREADOR/miniomp_Dani/test/set-0/TRACE.0000004281000000000000.sym
+Extrae: Deallocating memory.
+Extrae: Application has ended. Tracing has been terminated.
+Extrae: Proceeding with the merge of the intermediate tracefiles.
+Extrae: Executing the merge process (using /home/tareador/codes/TAREADOR/miniomp_Dani/test/TRACE.mpits).
+merger: Extrae 3.1.0 (revision 3316 based on extrae/trunk)
+mpi2prv: Assigned nodes < tareador-VirtualBox >
+mpi2prv: Assigned size per processor < <1 Mbyte >
+mpi2prv: File /home/tareador/codes/TAREADOR/miniomp_Dani/test/set-0/TRACE.0000004281000000000000.mpit is object 1.1.1 on node tareador-VirtualBox assigned to processor 0
+mpi2prv: Time synchronization has been turned off
+mpi2prv: Checking for target directory existance... exists, ok!
+mpi2prv: Selected output trace format is Paraver
+mpi2prv: Stored trace format is Paraver
+mpi2prv: Searching synchronization points... done
+mpi2prv: Enabling Time Synchronization (Node).
+mpi2prv: Circular buffer enabled at tracing time? NO
+mpi2prv: Parsing intermediate files
+mpi2prv: Progress 1 of 2 ... 5.3% 10.3% 15.3% 20.3% 25.3% 30.2% 35.2% 40.2% 45.2% 50.2% 55.2% 60.1% 65.1% 70.1% 75.1% 80.1% 85.1% 90.0% 95.0% done
+mpi2prv: Processor 0 succeeded to translate its assigned files
+mpi2prv: Elapsed time translating files: 0 hours 0 minutes 0 seconds
+mpi2prv: Elapsed time sorting addresses: 0 hours 0 minutes 0 seconds
+mpi2prv: Generating tracefile (intermediate buffers of 6710784 events)
+         This process can take a while. Please, be patient.
+mpi2prv: Progress 2 of 2 ... 5.2% 10.3% 15.2% 20.3% 25.2% 30.3% 35.2% 40.3% 45.2% 50.3% 55.2% 60.3% 65.2% 70.3% 75.2% 80.3% 85.2% 90.3% 95.2% done
+mpi2prv: Elapsed time merge step: 0 hours 0 minutes 0 seconds
+mpi2prv: Resulting tracefile occupies 7379 bytes
+mpi2prv: Removing temporal files... done
+mpi2prv: Elapsed time removing temporal files: 0 hours 0 minutes 0 seconds
+mpi2prv: Congratulations! test_task_name-omp.prv has been generated.
+mini-omp is finalized
+Ending Extrae

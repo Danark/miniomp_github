@@ -36,6 +36,7 @@ extern int count_tasks_loop;
 extern int count_loop;
 extern int count_max_inner_loop;
 extern int count_inner_loop;
+extern int thread_count;
 
 // Declaratiuon of global variable for single work descriptor
 extern int single_count;
