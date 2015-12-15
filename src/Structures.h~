@@ -44,6 +44,7 @@ typedef struct {
    miniomp_task_node_t *depend;
    int index;
    int tree_index;
+   int dependencia;
 } miniomp_task_tree_t;
 
 typedef struct {

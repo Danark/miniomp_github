@@ -26,6 +26,7 @@ typedef struct {
   int count;
   int count2;
   int dependences;
+  int type;
 } miniomp_loop_t;
 
 

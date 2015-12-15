@@ -52,16 +52,20 @@ void GOMP_barrier() {
 	pthread_mutex_unlock(&concurrent_lock);
   }
   pthread_mutex_lock(&concurrent_lock);
+  barrier_count3++;
   #if _EXTRAE_
   start_event_thread();
-  start_vertical_dependences();
+  start_horizontal_dependences(count-barrier_count3);
   #endif
+  if(barrier_count3==omp_get_num_threads()){
+	barrier_count3=0;
+  }
 
 }
 
 
 
-void GOMP_barrier_loop(int dependences) {
+void GOMP_barrier_loop(int dependences, int type) {
   barrier_count1++;
   if(barrier_count1==omp_get_num_threads()){
 	barrier_count1=0;
@@ -74,9 +78,10 @@ void GOMP_barrier_loop(int dependences) {
   }
   pthread_mutex_lock(&concurrent_lock);
   #if _EXTRAE_
-  set_count_dependences(dependences);
+  //set_count_dependences(dependences);
   start_event_thread();
-  start_vertical_dependences();
+  if(type==ws_DYNAMIC) start_vertical_dependences_dynamic(dependences);
+  if(type==ws_GUIDED) start_vertical_dependences_guided(dependences);
   #endif
 
 }

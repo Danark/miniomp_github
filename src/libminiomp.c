@@ -6,6 +6,7 @@ pthread_mutex_t concurrent_lock;
 pthread_cond_t condition;
 int barrier_count1;
 int barrier_count2;
+int barrier_count3;
 int single_count;
 miniomp_loop_t miniomp_loop;
 int count;
@@ -20,6 +21,9 @@ int count_inner_loop;
 miniomp_hash_t miniomp_hash;
 int thread_count;
 miniomp_task_dependences_t miniomp_task_dependences;
+int count_ite;
+int count_chunk;
+int count_max_chunk;
 
 
 
@@ -44,6 +48,7 @@ init_miniomp(void) {
   single_count=0;
   barrier_count1=0;
   barrier_count2=0;
+  barrier_count3=0;
   count=0;
   count_critical_loop=0;
   count_loop=0;

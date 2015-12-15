@@ -37,6 +37,9 @@ extern int count_loop;
 extern int count_max_inner_loop;
 extern int count_inner_loop;
 extern int thread_count;
+extern int count_ite;
+extern int count_chunk;
+extern int count_max_chunk;
 
 // Declaratiuon of global variable for single work descriptor
 extern int single_count;
@@ -46,6 +49,8 @@ extern pthread_mutex_t concurrent_lock;
 extern pthread_cond_t condition;
 
 extern miniomp_hash_t miniomp_hash;
+
+extern miniomp_task_dependences_t miniomp_task_dependences;
 
 #define MAXELEMENTS_TQ 128
 

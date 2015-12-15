@@ -28,6 +28,7 @@ extern pthread_t *threads;
 extern int barrier_count1;
 //Barrier indicator 2
 extern int barrier_count2;
+extern int barrier_count3;
 extern int count;
 extern int count_critical_loop;
 extern int end;
@@ -37,6 +38,9 @@ extern int count_loop;
 extern int count_max_inner_loop;
 extern int count_inner_loop;
 extern int thread_count;
+extern int count_ite;
+extern int count_chunk;
+extern int count_max_chunk;
 
 // Declaratiuon of global variable for single work descriptor
 extern int single_count;

@@ -53,15 +53,59 @@ void end_event_loop () {
 
 
 void start_horizontal_dependences(int dependence) {
-    printf("DEPENDENCE %d\n", dependence);
+    //printf("DEPENDENCE %d\n", dependence);
     for (int i=0; i<omp_get_num_threads(); i++){
-	printf("DEPENDENCE_COUNT %d\n", dependence-i);
+	//printf("DEPENDENCE_COUNT %d\n", dependence-i);
 	Extrae_event (TASK_DEPENDENCES, dependence-i);
     }
 }
 
 
-void start_vertical_dependences() {
+void start_vertical_dependences_guided(int depend) {
+   printf("Dependences guided %d\n", count_ite);
+   depend++;
+   int ite = count_ite;
+   int chunk = count_chunk;
+   printf("depend: %d\n", depend);
+   printf("max_chunk: %d\n", count_max_chunk);
+   printf("count_max_inner_loop: %d\n", count_max_inner_loop);
+   int num_task = count_max_inner_loop/count_max_chunk; 
+   printf("num_task %d\n", num_task);
+   while (ite>0){
+	printf("depend1: %d\n", depend);
+	printf("chunk: %d\n", chunk);
+	Extrae_event (TASK_DEPENDENCES, depend);
+	ite = ite-chunk;
+	depend = depend+(chunk*num_task)+1;
+	chunk = ite/(2*omp_get_num_threads());
+	if (chunk==0) chunk = 1;
+   }
+}
+
+
+void start_vertical_dependences_dynamic(int depend) {
+   printf("Dependences dynamic %d\n", count_ite);
+   depend++;
+   int ite = count_ite;
+   int chunk = count_chunk;
+   printf("depend: %d\n", depend);
+   printf("max_chunk: %d\n", count_max_chunk);
+   printf("count_max_inner_loop: %d\n", count_max_inner_loop);
+   int num_task = count_max_inner_loop/count_max_chunk; 
+   printf("num_task %d\n", num_task);
+   while (ite>0){
+	printf("depend1: %d\n", depend);
+	printf("chunk: %d\n", chunk);
+	Extrae_event (TASK_DEPENDENCES, depend);
+	ite = ite-chunk;
+	depend = depend+(chunk*num_task)+1;
+	//chunk = ite/(2*omp_get_num_threads());
+	//if (chunk==0) chunk = 1;
+   }
+}
+		
+
+/*void start_vertical_dependences() {
    int aux;
    if(count_dependences==0){
       Extrae_event (TASK_DEPENDENCES, count-1);
@@ -90,15 +134,15 @@ void start_vertical_dependences() {
    }
    if (thread_count==omp_get_num_threads()) thread_count=0;
    count_dependences=0;
-}
+}*/
 
-void set_count_dependences(int dependence){
+/*void set_count_dependences(int dependence){
      count_dependences=count-(dependence+count_tasks_loop+thread_count);
      printf("count_dependences %d\n", count_dependences);
      printf("count %d\n",thread_count );
      thread_count++;
      //if (thread_count==omp_get_num_threads()) thread_count=0;
-}
+}*/
 
 
 void start_event_critical(int id) {
@@ -113,15 +157,27 @@ void end_event_critical(int id) {
      Extrae_event (END_CRITICAL, found);
 }
 
-void init_loop_dependences() {
+void init_loop_dependences( int left, int chunk_size) {
+	printf("dani: \n");
+	printf("ite: %d\n", left);
+	printf("chunk!!!!!!!!: %d\n", chunk_size);
         count_tasks_loop=0;
         count_max_inner_loop=0;
-        count_inner_loop=0;    
+        count_inner_loop=0; 
+	count_max_chunk = 0;
+	count_chunk = chunk_size;
+	count_ite = left;  
 }
 
 void calc_max_dependences(){
-    if (count_max_inner_loop<count_inner_loop) count_max_inner_loop=count_inner_loop;
+    if (count_max_inner_loop<=count_inner_loop) count_max_inner_loop=count_inner_loop;
     count_inner_loop=0;
+}
+
+
+void calc_max_chunk(int chunk_size){
+    //count_chunk = chunk_size;
+    if (count_max_chunk<=chunk_size) count_max_chunk=chunk_size;
 }
 
 void start_event_task(){
@@ -258,13 +314,11 @@ void function_out(int depend){
 		printf("dins2_out\n");
 		trobat = 1;
 		int tree_index = miniomp_task_dependences.depend[i].tree_index;
+		int tree_aux = tree_index-1;
 		printf("tree_out %d\n", miniomp_task_dependences.depend[i].tree_index);
-		if(tree_index%2!=0){
-			tree_index = miniomp_task_dependences.depend[i].tree_index-1;
-		}
-		else{
-			tree_index = miniomp_task_dependences.depend[i].tree_index;
+		if(tree_index%2==0){
 			miniomp_task_dependences.depend[i].tree_index++;
+			tree_aux++;
 		}
 		printf("tree_out %d\n", tree_index);
 		printf("index_out %d\n", miniomp_task_dependences.depend[i].index);
@@ -276,7 +330,7 @@ void function_out(int depend){
 		}
 		int index = miniomp_task_dependences.depend[i].index;
 		miniomp_task_dependences.depend[i].index++;
-		miniomp_task_dependences.depend[i].depend[index].level=tree_index+1;
+		miniomp_task_dependences.depend[i].depend[index].level=tree_aux+1;
 		miniomp_task_dependences.depend[i].depend[index].task=count;
 	}
 	

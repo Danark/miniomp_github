@@ -19,8 +19,8 @@ void foo() {
    
   
   
-    #pragma omp for schedule(dynamic,1) 
-    for (long i = 0; i < 10; i++){
+    #pragma omp for schedule(runtime) 
+    for (long i = 0; i < 15; i++){
 	for (int u=0; u<100000000; u++){
         result++;
 	}
@@ -31,7 +31,8 @@ void foo() {
 	#pragma omp atomic
         result++;*/
 
-   //#pragma omp barrier
+   #pragma omp barrier
+   #pragma omp barrier
    //#pragma omp single
    printf("result = %ld\n", result);
     }

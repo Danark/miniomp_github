@@ -1,0 +1,105 @@
+	.file	"test_loop.c"
+	.section	.rodata.str1.1,"aMS",@progbits,1
+.LC0:
+	.string	"result = %ld\n"
+	.text
+	.type	foo._omp_fn.0, @function
+foo._omp_fn.0:
+.LFB48:
+	.cfi_startproc
+	subq	$24, %rsp
+	.cfi_def_cfa_offset 32
+	leaq	8(%rsp), %r8
+	movq	%rsp, %rcx
+	movl	$1, %edx
+	movl	$15, %esi
+	movl	$0, %edi
+	call	GOMP_loop_runtime_start
+	testb	%al, %al
+	je	.L2
+.L7:
+	movq	(%rsp), %rdx
+	movq	8(%rsp), %rsi
+	movq	result(%rip), %rcx
+.L4:
+	movl	$100000000, %eax
+	jmp	.L3
+.L11:
+	addq	$100000000, %rcx
+	addq	$1, %rdx
+	cmpq	%rdx, %rsi
+	jg	.L4
+	movq	%rcx, result(%rip)
+	leaq	8(%rsp), %rsi
+	movq	%rsp, %rdi
+	call	GOMP_loop_runtime_next
+	testb	%al, %al
+	jne	.L7
+	jmp	.L2
+.L3:
+	subl	$1, %eax
+	jne	.L3
+	jmp	.L11
+.L2:
+	call	GOMP_loop_end
+	call	GOMP_barrier
+	call	GOMP_barrier
+	movq	result(%rip), %rdx
+	movl	$.LC0, %esi
+	movl	$1, %edi
+	movl	$0, %eax
+	call	__printf_chk
+	addq	$24, %rsp
+	.cfi_def_cfa_offset 8
+	ret
+	.cfi_endproc
+.LFE48:
+	.size	foo._omp_fn.0, .-foo._omp_fn.0
+	.globl	foo
+	.type	foo, @function
+foo:
+.LFB46:
+	.cfi_startproc
+	subq	$8, %rsp
+	.cfi_def_cfa_offset 16
+	movl	$0, %ecx
+	movl	$0, %edx
+	movl	$0, %esi
+	movl	$foo._omp_fn.0, %edi
+	call	GOMP_parallel
+	addq	$8, %rsp
+	.cfi_def_cfa_offset 8
+	ret
+	.cfi_endproc
+.LFE46:
+	.size	foo, .-foo
+	.globl	main
+	.type	main, @function
+main:
+.LFB47:
+	.cfi_startproc
+	subq	$8, %rsp
+	.cfi_def_cfa_offset 16
+	movl	$0, %eax
+	call	foo
+	movq	result(%rip), %rdx
+	movl	$.LC0, %esi
+	movl	$1, %edi
+	movl	$0, %eax
+	call	__printf_chk
+	movl	$0, %eax
+	addq	$8, %rsp
+	.cfi_def_cfa_offset 8
+	ret
+	.cfi_endproc
+.LFE47:
+	.size	main, .-main
+	.globl	result
+	.bss
+	.align 8
+	.type	result, @object
+	.size	result, 8
+result:
+	.zero	8
+	.ident	"GCC: (Ubuntu 4.9.3-5ubuntu1~14.04) 4.9.3"
+	.section	.note.GNU-stack,"",@progbits

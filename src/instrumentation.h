@@ -18,7 +18,7 @@ void end_event_loop ();
 void start_horizontal_dependences (int dependence);
 
 //evento Extrae que indica dependencias entre tareas 
-void start_vertical_dependences ();
+//void start_vertical_dependences ();
 
 //se setean el valor de la variable que cuenta el numero de dependencias acomuladas
 void set_count_dependences (int dependence);
@@ -35,7 +35,7 @@ void start_event_critical(int id);
 void end_event_critical(int id);
 
 //inicia el contador de tareas dentro de un loop
-void init_loop_dependences();
+void init_loop_dependences( int left, int chunk_size);
 
 //evento Extrae que indica el inicio de una task
 void start_event_task();
@@ -58,3 +58,9 @@ void set_task_dependences (void **depend);
 void function_in(int depend);
 
 void function_out(int depend);
+
+void calc_max_chunk(int chunk_size);
+
+void start_vertical_dependences_guided(int depend);
+
+void start_vertical_dependences_dynamic(int depend);

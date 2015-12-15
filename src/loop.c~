@@ -15,9 +15,69 @@ int contador;
    *IEND are filled with a new iteration block.  Returns false if all work
    has been assigned.  */
 
+
+bool
+GOMP_loop_guided_next (long *istart, long *iend) {
+  printf("TBI: guided!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
+  #if _EXTRAE_
+  calc_max_dependences();
+  calc_max_chunk(miniomp_loop.chunk_size);
+  end_event_loop();
+  #endif
+  miniomp_loop.count++;
+  if(miniomp_loop.count==omp_get_num_threads()){
+  	miniomp_loop.count=0;
+	pthread_cond_broadcast(&condition);
+	pthread_mutex_unlock(&concurrent_lock);
+  }
+  else{
+		
+	pthread_cond_wait(&condition, &concurrent_lock);
+	pthread_mutex_unlock(&concurrent_lock);	
+		
+	}
+  pthread_mutex_lock(&concurrent_lock);
+  bool ret=(true);
+  printf("chunk %d\n", miniomp_loop.chunk_size);
+  printf("left %d\n", miniomp_loop.left);
+   if((miniomp_loop.left/miniomp_loop.incr)>0){
+        #if _EXTRAE_
+  	start_event_loop();
+  	start_horizontal_dependences(miniomp_loop.dependences);
+  	#endif
+  	*istart=miniomp_loop.current;
+  	if ((miniomp_loop.left/miniomp_loop.incr)>=miniomp_loop.chunk_size){
+		printf("GRAN\n");
+		*iend=miniomp_loop.current+(miniomp_loop.chunk_size*miniomp_loop.incr);
+		miniomp_loop.current+=(miniomp_loop.chunk_size*miniomp_loop.incr);
+		miniomp_loop.left-=(miniomp_loop.chunk_size*miniomp_loop.incr);
+		if ( miniomp_loop.left/(omp_get_num_threads()*2)==0 ) miniomp_loop.chunk_size = 1;
+		else miniomp_loop.chunk_size= miniomp_loop.left/(omp_get_num_threads()*2);
+		}
+	else{
+         printf("PETIT\n");
+	 *iend=miniomp_loop.end;
+	 miniomp_loop.left=0;
+	 }
+
+  }
+  else {
+  	ret=(false);
+
+	
+  }
+
+  
+  
+  
+  return(ret);
+}
+
+
+
 bool
 GOMP_loop_dynamic_next (long *istart, long *iend) {
-  //printf("TBI: Asking for more iterations? I gave you all at the beginning, no more left ...\n");
+  printf("TBI: Asking for more iterations? I gave you all at the beginning, no more left ...\n");
   #if _EXTRAE_
   calc_max_dependences();
   end_event_loop();
@@ -35,17 +95,8 @@ GOMP_loop_dynamic_next (long *istart, long *iend) {
 		
 	}
   pthread_mutex_lock(&concurrent_lock);
-  /*#if _EXTRAE_
-  start_event_loop();
-  start_horizontal_dependences(miniomp_loop.dependences);
-  #endif*/
   bool ret=(true);
-  //printf("Entro en Next\n");
    if((miniomp_loop.left/miniomp_loop.incr)>0){
-	/*#if _EXTRAE_
-	calc_max_dependences();
-	end_event_loop();
-	#endif*/
         #if _EXTRAE_
   	start_event_loop();
   	start_horizontal_dependences(miniomp_loop.dependences);
@@ -62,37 +113,11 @@ GOMP_loop_dynamic_next (long *istart, long *iend) {
 	 *iend=miniomp_loop.end;
 	 miniomp_loop.left=0;
 	 }
-	//espera de la resta de threads x per poder seguir
-	/*miniomp_loop.count++;
-	if(miniomp_loop.count==omp_get_num_threads()){
-		miniomp_loop.count=0;
-		pthread_cond_broadcast(&condition);
-		pthread_mutex_unlock(&concurrent_lock);
-		
- 	 }
-  	else{
-		
-		pthread_cond_wait(&condition, &concurrent_lock);
-		pthread_mutex_unlock(&concurrent_lock);	
-		
-	}
-	pthread_mutex_lock(&concurrent_lock);
-		//miniomp_loop.count_iteration++;
-		#if _EXTRAE_
-	 	start_event_loop();
-                start_horizontal_dependences(miniomp_loop.dependences);
-	  	#endif
-*/
 
   }
   else {
   	ret=(false);
 
-       
-		/*#if _EXTRAE_
-		calc_max_dependences();
-	 	end_event_loop();
-	  	#endif*/
 	
   }
 
@@ -115,6 +140,50 @@ GOMP_loop_dynamic_next (long *istart, long *iend) {
    allocated to this thread.  Returns false if all work was assigned to
    other threads prior to this thread's arrival.  */
 
+
+
+
+
+bool
+GOMP_loop_guided_start (long start, long end, long incr, long chunk_size,
+                         long *istart, long *iend)
+{
+  #if _EXTRAE_
+  end_event_thread();
+  #endif
+  GOMP_barrier_No_Extrae();
+  if (miniomp_loop.isStart==(false)){
+	printf("Inicialitzo loop guided\n");
+  	miniomp_loop.left= end;
+	miniomp_loop.start=start;
+	miniomp_loop.end=end;
+	miniomp_loop.incr=incr;
+	miniomp_loop.chunk_size=chunk_size;
+        miniomp_loop.count_iteration=0;
+        miniomp_loop.isStart=(true);
+	miniomp_loop.current=start;
+	miniomp_loop.count=0;
+	miniomp_loop.dependences=count;
+	miniomp_loop.count2=0;
+	miniomp_loop.type = ws_GUIDED;
+	init_loop_dependences(end, chunk_size);
+        //init_critical_dependences();
+  }
+
+  GOMP_barrier_No_Extrae();
+  bool ret=GOMP_loop_guided_next(istart, iend);  
+  
+  //GOMP_loop_dynamic_next(istart, iend);  
+	
+  //printf("TBI: What a mess! Starting a non-static for worksharing construct and dont know what to do, I'll take it all\n");
+
+  return(ret);
+}
+
+
+
+
+
 bool
 GOMP_loop_dynamic_start (long start, long end, long incr, long chunk_size,
                          long *istart, long *iend)
@@ -136,7 +205,8 @@ GOMP_loop_dynamic_start (long start, long end, long incr, long chunk_size,
 	miniomp_loop.count=0;
 	miniomp_loop.dependences=count;
 	miniomp_loop.count2=0;
-	init_loop_dependences();
+	miniomp_loop.type = ws_DYNAMIC;
+	init_loop_dependences(end, chunk_size);
         //init_critical_dependences();
   }
 
@@ -169,7 +239,7 @@ GOMP_loop_end (void) {
    /*#if _EXTRAE_
    set_count_dependences(miniomp_loop.dependences);
    #endif*/
-   GOMP_barrier_loop(miniomp_loop.dependences);
+   GOMP_barrier_loop(miniomp_loop.dependences, miniomp_loop.type);
    contador++;
    if (contador==1){
    	miniomp_loop.isStart=(false);
@@ -184,7 +254,7 @@ GOMP_loop_end (void) {
 
 void
 GOMP_loop_end_nowait (void) {
-  //printf("TBI: Finishing a for worksharing construct with non static schedule, with nowait clause\n");
+  printf("TBI: Finishing a for worksharing construct with non static schedule, with nowait clause\n");
   miniomp_loop.count2++;
   if (miniomp_loop.count2==omp_get_num_threads()){
 	miniomp_loop.count2=0;

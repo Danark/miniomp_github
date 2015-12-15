@@ -35,7 +35,7 @@ void start_event_critical(int id);
 void end_event_critical(int id);
 
 //inicia el contador de tareas dentro de un loop
-void init_loop_dependences();
+void init_loop_dependences( int left, int chunk_size);
 
 //evento Extrae que indica el inicio de una task
 void start_event_task();
@@ -49,5 +49,18 @@ void init_hash();
 //evento que busca en el hash
 int found_hash(int id);
 
-//evento que a;ade en el hash
+//evento que anade en el hash
 int insert_hash(int id);
+
+//crea las dependencias de las tasks
+void set_task_dependences (void **depend);
+
+void function_in(int depend);
+
+void function_out(int depend);
+
+void calc_max_chunk(int chunk_size);
+
+void start_vertical_dependences_guided(int depend);
+
+void start_vertical_dependences_dynamic(int depend);
