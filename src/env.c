@@ -16,4 +16,43 @@ void parse_env(void) {
       miniomp_icv.nthreads_var = atoi(env);
     }
     printf("Setting nthreads_var ICV to %d\n", miniomp_icv.nthreads_var);
+    env = getenv ("OMP_SCHEDULE");
+    if (env == NULL) {
+	printf("ccaa");
+    
+    }else{
+	int trobat = 0;
+	int run_ched_var;
+	while(trobat==0){
+		if(strncasecmp(env,"auto", 4) ==0){
+			trobat=1;
+			env+=5;
+			run_ched_var = ws_AUTO;
+		}
+		else if(strncasecmp(env,"guided", 6) ==0){
+			trobat=1;
+			env+=7;
+			run_ched_var = ws_GUIDED;
+		}
+		else if(strncasecmp(env,"dynamic", 7) ==0){
+			trobat=1;
+			env+=8;
+			run_ched_var = ws_DYNAMIC;
+		}
+		else if(strncasecmp(env,"static", 6) ==0){
+			trobat=1;
+			env+=7;
+			run_ched_var = ws_STATICCHUNK;
+		}
+		else if (*env == ","){
+			trobat = 1;
+			env++;
+		}
+		else env++;
+		
+	}
+	miniomp_icv.run_ched_chunk_size = atoi(env);
+	miniomp_icv.run_ched_var = run_ched_var;	
+	
+    }
 }

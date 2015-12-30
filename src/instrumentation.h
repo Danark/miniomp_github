@@ -15,7 +15,7 @@ void start_event_loop ();
 void end_event_loop ();
 
 //evento Extrae que indica dependencias entre tareas
-void start_horizontal_dependences (int dependence);
+void start_horizontal_dependences (int dependence, int task);
 
 //evento Extrae que indica dependencias entre tareas 
 //void start_vertical_dependences ();
@@ -59,8 +59,18 @@ void function_in(int depend);
 
 void function_out(int depend);
 
-void calc_max_chunk(int chunk_size);
+//void calc_max_chunk(int chunk_size);
 
-void start_vertical_dependences_guided(int depend);
+//void start_vertical_dependences_guided(int depend);
 
-void start_vertical_dependences_dynamic(int depend);
+//void start_vertical_dependences_dynamic(int depend);
+
+//void start_vertical_dependences_static(int depend);
+
+void start_nowait_dependences();
+
+void start_loop_dependences();
+
+void start_vertical_dependences();
+
+void restart_count_tasks_loop();

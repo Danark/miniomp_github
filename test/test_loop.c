@@ -18,11 +18,14 @@ void foo() {
     }*/
    
   
-  
+    omp_set_schedule(omp_sched_static, 0);
     #pragma omp for schedule(runtime) 
-    for (long i = 0; i < 15; i++){
-	for (int u=0; u<100000000; u++){
-        result++;
+    for (long i = 0; i < 11; i++){
+	#pragma omp task
+	{
+		for (int u=0; u<100000000; u++){
+        	result++;
+		}
 	}
     }
    
@@ -31,8 +34,7 @@ void foo() {
 	#pragma omp atomic
         result++;*/
 
-   #pragma omp barrier
-   #pragma omp barrier
+   
    //#pragma omp single
    printf("result = %ld\n", result);
     }

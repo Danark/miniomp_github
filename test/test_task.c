@@ -17,15 +17,22 @@ void foo() {
     for (long i = 0; i < 10; i++){
 	#pragma omp task
 	{
-		#pragma omp critical
-        		result++;
+		//pragma omp critical
+        result++;
 	}
 	#pragma omp task
         result++;
 	#pragma omp task
-        result++;}
+        result++;
+    }
+	
 
-   #pragma omp taskwait
+  // #pragma omp task
+        result++;
+   #pragma omp barrier
+   #pragma omp task
+        result++;
+   #pragma omp barrier
    printf("result = %ld\n", result);
     }
 }

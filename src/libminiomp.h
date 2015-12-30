@@ -41,6 +41,8 @@ extern int thread_count;
 extern int count_ite;
 extern int count_chunk;
 extern int count_max_chunk;
+extern int *no_wait_dependences;
+extern int count_tasks_loop_aux;
 
 // Declaratiuon of global variable for single work descriptor
 extern int single_count;

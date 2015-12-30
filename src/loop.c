@@ -20,8 +20,8 @@ bool
 GOMP_loop_guided_next (long *istart, long *iend) {
   printf("TBI: guided!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
   #if _EXTRAE_
-  calc_max_dependences();
-  calc_max_chunk(miniomp_loop.chunk_size);
+  //calc_max_dependences();
+  //calc_max_chunk(miniomp_loop.chunk_size);
   end_event_loop();
   #endif
   miniomp_loop.count++;
@@ -43,7 +43,15 @@ GOMP_loop_guided_next (long *istart, long *iend) {
    if((miniomp_loop.left/miniomp_loop.incr)>0){
         #if _EXTRAE_
   	start_event_loop();
-  	start_horizontal_dependences(miniomp_loop.dependences);
+	//---------------------------------/
+	if (no_wait_dependences[omp_get_thread_num()]!=0){
+		start_loop_dependences();
+  	}else{
+		start_horizontal_dependences(miniomp_loop.dependences);
+  	}
+	//------------------------------------------//
+	no_wait_dependences[omp_get_thread_num()]=count;
+  	//start_horizontal_dependences(miniomp_loop.dependences);
   	#endif
   	*istart=miniomp_loop.current;
   	if ((miniomp_loop.left/miniomp_loop.incr)>=miniomp_loop.chunk_size){
@@ -77,10 +85,10 @@ GOMP_loop_guided_next (long *istart, long *iend) {
 
 bool
 GOMP_loop_dynamic_next (long *istart, long *iend) {
-  printf("TBI: Asking for more iterations? I gave you all at the beginning, no more left ...\n");
+  //printf("TBI: Asking for more iterations? I gave you all at the beginning, no more left ...\n");
   #if _EXTRAE_
-  calc_max_dependences();
-  calc_max_chunk(miniomp_loop.chunk_size);
+  //calc_max_dependences();
+  //calc_max_chunk(miniomp_loop.chunk_size);
   end_event_loop();
   #endif
   miniomp_loop.count++;
@@ -100,7 +108,15 @@ GOMP_loop_dynamic_next (long *istart, long *iend) {
    if((miniomp_loop.left/miniomp_loop.incr)>0){
         #if _EXTRAE_
   	start_event_loop();
-  	start_horizontal_dependences(miniomp_loop.dependences);
+	//---------------------------------/
+	if (no_wait_dependences[omp_get_thread_num()]!=0){
+		start_loop_dependences();
+  	}else{
+		start_horizontal_dependences(miniomp_loop.dependences);
+  	}
+	//------------------------------------------//
+	no_wait_dependences[omp_get_thread_num()]=count;
+  	//start_horizontal_dependences(miniomp_loop.dependences);
   	#endif
   	*istart=miniomp_loop.current;
   	if ((miniomp_loop.left/miniomp_loop.incr)>=miniomp_loop.chunk_size){
@@ -128,6 +144,79 @@ GOMP_loop_dynamic_next (long *istart, long *iend) {
   return(ret);
 }
 
+
+
+bool
+GOMP_loop_static_next (long *istart, long *iend) {
+  printf("TBI: Asking for more iterations? I gave you all at the beginning, no more left ...\n");
+  #if _EXTRAE_
+  //calc_max_dependences();
+  //calc_max_chunk(miniomp_loop.chunk_size);
+  end_event_loop();
+  #endif
+  miniomp_loop.count++;
+  if(miniomp_loop.count==omp_get_num_threads()){
+  	miniomp_loop.count=0;
+	pthread_cond_broadcast(&condition);
+	pthread_mutex_unlock(&concurrent_lock);
+  }
+  else{
+		
+	pthread_cond_wait(&condition, &concurrent_lock);
+	pthread_mutex_unlock(&concurrent_lock);	
+		
+	}
+  pthread_mutex_lock(&concurrent_lock);
+  bool ret=(true);
+   if((miniomp_loop.left/miniomp_loop.incr)>0){
+        #if _EXTRAE_
+  	start_event_loop();
+	//---------------------------------/
+	if (no_wait_dependences[omp_get_thread_num()]!=0){
+		start_loop_dependences();
+  	}else{
+		start_horizontal_dependences(miniomp_loop.dependences);
+  	}
+	//------------------------------------------//
+	no_wait_dependences[omp_get_thread_num()]=count;
+  	//start_horizontal_dependences(miniomp_loop.dependences);
+  	#endif
+  	*istart=miniomp_loop.current;
+  	if ((miniomp_loop.left/miniomp_loop.incr)>=miniomp_loop.chunk_size){
+		printf("GRAN\n");
+		*iend=miniomp_loop.current+(miniomp_loop.chunk_size*miniomp_loop.incr);
+		miniomp_loop.current+=(miniomp_loop.chunk_size*miniomp_loop.incr);
+		miniomp_loop.left-=(miniomp_loop.chunk_size*miniomp_loop.incr);
+		}
+	else{
+         printf("PETIT\n");
+	 *iend=miniomp_loop.end;
+	 miniomp_loop.left=0;
+	 }
+
+  }
+  else {
+  	ret=(false);
+
+	
+  }
+
+  
+  
+  
+  return(ret);
+}
+
+
+bool
+GOMP_loop_runtime_next (long *istart, long *iend) {
+	printf("NEXT\n");
+	if (miniomp_icv.run_ched_var == ws_STATICCHUNK) return GOMP_loop_static_next (istart, iend);
+	else if (miniomp_icv.run_ched_var == ws_DYNAMIC) return GOMP_loop_dynamic_next (istart, iend);
+	else if (miniomp_icv.run_ched_var == ws_GUIDED) return GOMP_loop_guided_next (istart, iend);
+	else return false;
+}
+
 /* The *_start routines are called when first encountering a loop construct
    that is not bound directly to a parallel construct.  The first thread 
    that arrives will create the work-share construct; subsequent threads
@@ -152,10 +241,11 @@ GOMP_loop_guided_start (long start, long end, long incr, long chunk_size,
   #if _EXTRAE_
   end_event_thread();
   #endif
+  no_wait_dependences[omp_get_thread_num()]=count;
   GOMP_barrier_No_Extrae();
   if (miniomp_loop.isStart==(false)){
 	printf("Inicialitzo loop guided\n");
-  	miniomp_loop.left= end;
+  	miniomp_loop.left= end-start;
 	miniomp_loop.start=start;
 	miniomp_loop.end=end;
 	miniomp_loop.incr=incr;
@@ -167,10 +257,11 @@ GOMP_loop_guided_start (long start, long end, long incr, long chunk_size,
 	miniomp_loop.dependences=count;
 	miniomp_loop.count2=0;
 	miniomp_loop.type = ws_GUIDED;
-	init_loop_dependences(end, chunk_size);
-        //init_critical_dependences();
+	//init_loop_dependences(end, chunk_size);
+        ////init_critical_dependences(); --> no
+	
   }
-
+  
   GOMP_barrier_No_Extrae();
   bool ret=GOMP_loop_guided_next(istart, iend);  
   
@@ -192,10 +283,11 @@ GOMP_loop_dynamic_start (long start, long end, long incr, long chunk_size,
   #if _EXTRAE_
   end_event_thread();
   #endif
+  no_wait_dependences[omp_get_thread_num()]=count;
   GOMP_barrier_No_Extrae();
   if (miniomp_loop.isStart==(false)){
 	printf("Inicialitzo loop dynamic\n");
-  	miniomp_loop.left= end;
+  	miniomp_loop.left= end-start;
 	miniomp_loop.start=start;
 	miniomp_loop.end=end;
 	miniomp_loop.incr=incr;
@@ -207,12 +299,52 @@ GOMP_loop_dynamic_start (long start, long end, long incr, long chunk_size,
 	miniomp_loop.dependences=count;
 	miniomp_loop.count2=0;
 	miniomp_loop.type = ws_DYNAMIC;
-	init_loop_dependences(end, chunk_size);
-        //init_critical_dependences();
+	//init_loop_dependences(end, chunk_size);
+        ////init_critical_dependences(); -->no
   }
-
+  
   GOMP_barrier_No_Extrae();
   bool ret=GOMP_loop_dynamic_next(istart, iend);  
+  
+  //GOMP_loop_dynamic_next(istart, iend);  
+	
+  //printf("TBI: What a mess! Starting a non-static for worksharing construct and dont know what to do, I'll take it all\n");
+
+  return(ret);
+}
+
+bool
+GOMP_loop_static_start (long start, long end, long incr, long chunk_size,
+                         long *istart, long *iend)
+{
+  #if _EXTRAE_
+  end_event_thread();
+  #endif
+  no_wait_dependences[omp_get_thread_num()]=count;
+  GOMP_barrier_No_Extrae();
+  if (miniomp_loop.isStart==(false)){
+	printf("Inicialitzo loop static%d\n", chunk_size);
+  	miniomp_loop.left= end-start;
+	miniomp_loop.start=start;
+	miniomp_loop.end=end;
+	miniomp_loop.incr=incr;
+	if (chunk_size == 0){
+		chunk_size = (end-start)/omp_get_num_threads();
+		if (((end-start)%omp_get_num_threads())!=0) chunk_size++;
+	}
+	miniomp_loop.chunk_size=chunk_size;
+        miniomp_loop.count_iteration=0;
+        miniomp_loop.isStart=(true);
+	miniomp_loop.current=start;
+	miniomp_loop.count=0;
+	miniomp_loop.dependences=count;
+	miniomp_loop.count2=0;
+	miniomp_loop.type = ws_STATICCHUNK;
+	//init_loop_dependences(end, chunk_size);
+        ////init_critical_dependences(); -->no
+  }
+  GOMP_barrier_No_Extrae();
+  bool ret=GOMP_loop_static_next(istart, iend);  
   
   //GOMP_loop_dynamic_next(istart, iend);  
 	
@@ -224,6 +356,17 @@ GOMP_loop_dynamic_start (long start, long end, long incr, long chunk_size,
 /* The GOMP_loop_end* routines are called after the thread is told that
    all loop iterations are complete.  The first version synchronize
    all threads; the nowait version does not. */
+
+bool
+GOMP_loop_runtime_start (long start, long end, long incr, long *istart, long *iend)
+{
+	printf("START\n");
+	if (miniomp_icv.run_ched_var == ws_STATICCHUNK)return GOMP_loop_static_start (start, end, incr, (long)miniomp_icv.run_ched_chunk_size, istart, iend);
+	else if (miniomp_icv.run_ched_var == ws_DYNAMIC) return GOMP_loop_dynamic_start (start, end, incr,(long)miniomp_icv.run_ched_chunk_size, istart, iend);
+	else if (miniomp_icv.run_ched_var == ws_GUIDED)return GOMP_loop_guided_start (start, end, incr, (long)miniomp_icv.run_ched_chunk_size, istart, iend);
+	else return false;
+
+}
 
 void
 GOMP_loop_end (void) {
@@ -262,7 +405,12 @@ GOMP_loop_end_nowait (void) {
 	miniomp_loop.isStart=(false);
   }
   start_event_thread();
-  start_horizontal_dependences(miniomp_loop.dependences);
+  //start_horizontal_dependences(miniomp_loop.dependences);
+  if (no_wait_dependences[omp_get_thread_num()]!=0){
+	start_nowait_dependences();
+  }else{
+	start_horizontal_dependences(miniomp_loop.dependences);
+  }
  
  
 }

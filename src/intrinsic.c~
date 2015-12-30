@@ -5,7 +5,6 @@ void omp_set_num_threads (int n) {
 }
 
 int omp_get_num_threads (void) {
-  end_event_thread();
   return(miniomp_icv.nthreads_var);
 }
 
@@ -13,3 +12,12 @@ int omp_get_thread_num (void) {
   int num = (int)(long)pthread_getspecific(miniomp_specifickey);
   return num;
 }
+
+void omp_set_schedule (int n, int p) {
+  printf("schedule %d\n", n);
+  printf("chubk %d\n", p);
+  miniomp_icv.run_ched_var = (n > 0 ? n : 1);
+  miniomp_icv.run_ched_chunk_size = (n > 0 ? p : 0);
+}
+
+

@@ -18,7 +18,7 @@ GOMP_single_start (void)
   }
   if(single_count==omp_get_num_threads()){
 	single_count=0;
-}  
+  }  
 return ret;
 }
 

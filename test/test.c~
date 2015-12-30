@@ -6,33 +6,27 @@
 #include <string.h>
 #include <omp.h>	/* OpenMP */
 
-int first=0, second=0;
+int first=0;
 
 int foo() {
-    int i, x = 1023;
-#pragma omp parallel firstprivate(x) reduction(+:first) if(x>0)
+    int  x = 1023;
+    first += x+1;
+#pragma omp parallel firstprivate(x)  if(x>0)
     {
-    x++; 
-    first += x;
+    int aux;
+    #pragma omp task depend(in:first)
+    aux = first+2;
+    
+    #pragma omp task depend(inout:first)
+    first = first+3;  
     
     printf("Thread %d finished the execution of foo\n", omp_get_thread_num());
     #pragma omp barrier
-    //#pragma omp barrier
-    printf("Thread %d finished the execution of foo 2\n", omp_get_thread_num());
+    
     }
-
-/*#pragma omp parallel private(i) shared(first) reduction(+:second) num_threads(2)
-{
-    second = first;
-    for (i = 0; i < 16; i++)
-        second++;
-}
-#pragma omp parallel
-    printf("Thread %d finished the execution of foo\n", omp_get_thread_num());*/
-
     return(x);
 }
 
 int main(int argc, char *argv[]) {
-    printf("first = %d, second = %d, x = %d\n", first, second, foo());
+    printf("first = %d, x = %d\n", first, foo());
 }

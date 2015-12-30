@@ -24,6 +24,8 @@ miniomp_task_dependences_t miniomp_task_dependences;
 int count_ite;
 int count_chunk;
 int count_max_chunk;
+int *no_wait_dependences;
+int count_tasks_loop_aux;
 
 
 
@@ -53,13 +55,15 @@ init_miniomp(void) {
   count_critical_loop=0;
   count_loop=0;
   count_dependences=0;
-  int count_tasks_loop=0;
+  count_tasks_loop=0;
+  count_tasks_loop_aux=0;
   pthread_mutex_init(&concurrent_lock, NULL);
   pthread_cond_init(&condition, NULL);
   init_hash();
   thread_count=0;
   miniomp_task_dependences.index=0;
   miniomp_task_dependences.depend = (miniomp_task_tree_t *)malloc(MAX_DEPENDENCES*sizeof(miniomp_task_tree_t));
+  no_wait_dependences = (int *)malloc(MAX_THREADS*sizeof(int));
   /*miniomp_task_dependences.depend_in = (int *)malloc(MAX_DEPENDENCES*sizeof(int));
   miniomp_task_dependences.task_out = (int *)malloc(MAX_DEPENDENCES*sizeof(int));
   miniomp_task_dependences.task_in = (int *)malloc(MAX_DEPENDENCES*sizeof(int));*/

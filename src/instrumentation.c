@@ -28,8 +28,8 @@ int insert_hash(int id){
 
 void start_event_thread () {
     Extrae_event (TASK, count+1);
-    //Extrae_event (7002, count+1);
     count++;
+	
 }
 
 void end_event_thread () {
@@ -52,16 +52,24 @@ void end_event_loop () {
 }
 
 
-void start_horizontal_dependences(int dependence) {
+/*void start_horizontal_dependences(int dependence) {
     //printf("DEPENDENCE %d\n", dependence);
     for (int i=0; i<omp_get_num_threads(); i++){
 	//printf("DEPENDENCE_COUNT %d\n", dependence-i);
 	Extrae_event (TASK_DEPENDENCES, dependence-i);
     }
+}*/
+
+void start_horizontal_dependences(int dependence, int task) {
+    //printf("DEPENDENCE %d\n", dependence);
+    for (int i=0; i<omp_get_num_threads(); i++){
+	printf("TASK_COUNT %d\n",task);
+	printf("DEPENDENCE_COUNT %d\n", dependence-(((1+i)*task/omp_get_num_threads())+i));
+	Extrae_event (TASK_DEPENDENCES, dependence-(((1+i)*task/omp_get_num_threads())+i));
+    }
 }
 
-
-void start_vertical_dependences_guided(int depend) {
+/*void start_vertical_dependences_guided(int depend) {
    printf("Dependences guided %d\n", count_ite);
    depend++;
    int ite = count_ite;
@@ -80,10 +88,10 @@ void start_vertical_dependences_guided(int depend) {
 	chunk = ite/(2*omp_get_num_threads());
 	if (chunk==0) chunk = 1;
    }
-}
+}*/
 
 
-void start_vertical_dependences_dynamic(int depend) {
+/*void start_vertical_dependences_dynamic(int depend) {
    printf("Dependences dynamic %d\n", count_ite);
    depend++;
    int ite = count_ite;
@@ -102,7 +110,28 @@ void start_vertical_dependences_dynamic(int depend) {
 	//chunk = ite/(2*omp_get_num_threads());
 	//if (chunk==0) chunk = 1;
    }
-}
+}*/
+
+/*void start_vertical_dependences_static(int depend) {
+   printf("Dependences static %d\n", count_ite);
+   depend++;
+   int ite = count_ite;
+   int chunk = count_chunk;
+   printf("depend: %d\n", depend);
+   printf("max_chunk: %d\n", count_max_chunk);
+   printf("count_max_inner_loop: %d\n", count_max_inner_loop);
+   int num_task = count_max_inner_loop/count_max_chunk; 
+   printf("num_task %d\n", num_task);
+   while (ite>0){
+	printf("depend1: %d\n", depend);
+	printf("chunk: %d\n", chunk);
+	Extrae_event (TASK_DEPENDENCES, depend);
+	ite = ite-chunk;
+	depend = depend+(chunk*num_task)+1;
+	//chunk = ite/(2*omp_get_num_threads());
+	//if (chunk==0) chunk = 1;
+   }
+}*/
 		
 
 /*void start_vertical_dependences() {
@@ -157,7 +186,7 @@ void end_event_critical(int id) {
      Extrae_event (END_CRITICAL, found);
 }
 
-void init_loop_dependences( int left, int chunk_size) {
+/*void init_loop_dependences( int left, int chunk_size) {
 	printf("dani: \n");
 	printf("ite: %d\n", left);
 	printf("chunk!!!!!!!!: %d\n", chunk_size);
@@ -167,18 +196,18 @@ void init_loop_dependences( int left, int chunk_size) {
 	count_max_chunk = 0;
 	count_chunk = chunk_size;
 	count_ite = left;  
-}
+}*/
 
-void calc_max_dependences(){
+/*void calc_max_dependences(){
     if (count_max_inner_loop<=count_inner_loop) count_max_inner_loop=count_inner_loop;
     count_inner_loop=0;
-}
+}*/
 
 
-void calc_max_chunk(int chunk_size){
+/*void calc_max_chunk(int chunk_size){
     //count_chunk = chunk_size;
     if (count_max_chunk<=chunk_size) count_max_chunk=chunk_size;
-}
+}*/
 
 void start_event_task(){
     Extrae_event (TASK, count+1);
@@ -365,3 +394,23 @@ void set_task_dependences (void **depend){
 	function_in(depend[i+2]);
    }
 }
+
+void start_loop_dependences(){
+   Extrae_event (TASK_DEPENDENCES, no_wait_dependences[omp_get_thread_num()]);
+}
+
+void start_nowait_dependences(){
+   Extrae_event (TASK_DEPENDENCES, no_wait_dependences[omp_get_thread_num()]);
+}
+
+void start_vertical_dependences() {
+   for (int i = 0; i<omp_get_num_threads(); i++){
+	Extrae_event (TASK_DEPENDENCES, no_wait_dependences[i]);
+   }
+}
+
+void restart_count_tasks_loop(){
+   count_tasks_loop=0;
+}	
+	
+
