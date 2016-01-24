@@ -2,75 +2,74 @@
 
 
 
-//evento Extrae que indica el fin de un region paralela de un thread en concreto//
+//Extrae event that sets the start of a parallel region//
 void start_event_thread ();
 
-//evento Extrae que indica el inicio de un region paralela de un thread en concreto//
+//Extrae event that sets the end of a parallel region//
 void end_event_thread();
 
-//evento Extrae que indica el inicio de un chunk de iteraciones//
+//Extrae event that sets the start of a iteration chunk//
 void start_event_loop ();
 
-//evento Extrae que indica el inicio de un chunk de iteraciones//
+//Extrae event that sets the end of a iteration chunk//
 void end_event_loop ();
 
-//evento Extrae que indica dependencias entre tareas
-void start_horizontal_dependences (int dependence);
-
-//evento Extrae que indica dependencias entre tareas 
-//void start_vertical_dependences ();
+//Extrae event that sets tasks dependences
+void start_horizontal_dependences (int dependence, int task);
 
 //se setean el valor de la variable que cuenta el numero de dependencias acomuladas
-void set_count_dependences (int dependence);
+//void set_count_dependences (int dependence);
 
-//inicia el contador de criticals dentro de un loop
-//void init_critical_dependences();
 
-void calc_max_dependences();
+//void calc_max_dependences();
 
-//evento Extrae que indica el inicio de una region critica
+//Extrae event that sets the start of a critical region
 void start_event_critical(int id);
 
-//evento Extrae que indica el fin de una region critica
+//Extrae event that sets the end of a critical region
 void end_event_critical(int id);
 
 //inicia el contador de tareas dentro de un loop
-void init_loop_dependences( int left, int chunk_size);
+//void init_loop_dependences( int left, int chunk_size);
 
-//evento Extrae que indica el inicio de una task
+//Extrae event that sets the start of a task
 void start_event_task();
 
-//evento Extrae que indica el fin de una task
+//Extrae event that sets the end of a task
 void end_event_task();
 
-//evento que inicializa el hash
+//initialize the hash
 void init_hash();
 
-//evento que busca en el hash
+//found in the hash the memory region id
 int found_hash(int id);
 
-//evento que anade en el hash
+//insert in the hash the memory region id
 int insert_hash(int id);
 
-//crea las dependencias de las tasks
+//create dependences between tasks
 void set_task_dependences (void **depend);
 
+//create dependendces read-write between tasks
 void function_in(int depend);
 
+//create dependendces write-read and write-write between tasks
 void function_out(int depend);
 
-//void calc_max_chunk(int chunk_size);
-
-//void start_vertical_dependences_guided(int depend);
-
-//void start_vertical_dependences_dynamic(int depend);
-
-//void start_vertical_dependences_static(int depend);
-
+//set dependences between a nowait loop and a paralel region
 void start_nowait_dependences();
 
+//set dependences between a paralel region and a loop
 void start_loop_dependences();
 
+//set dependences between a loop and a paralel region
 void start_vertical_dependences();
 
+//restart the variable count_tasks_loop
 void restart_count_tasks_loop();
+
+//set dependendences between paralel region and a sequential region
+void start_horizontal_dependences_regions();
+
+//set dependendences between sequential region and a paralel region
+void start_vertical_dependences_region();

@@ -1,6 +1,7 @@
 //OpenMP critical_hash//
 
 //Funcion para inicialiizar el hash
-void init_task_queue(int max_elements);
+void init_hash(int max_elements);
 
-void add_node();
+/*Inserta un nodo a la tabla hash*/
+void add_node(miniomp_node_t node);

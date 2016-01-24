@@ -17,10 +17,11 @@ void foo() {
         result++;
     }*/
    
-  
-  
-    #pragma omp for schedule(dynamic,3) 
-    for (long i = 0; i < 7; i++){
+    #pragma omp task
+       result++;
+    omp_set_schedule(omp_sched_static, 0);
+    #pragma omp for schedule(runtime) 
+    for (long i = 0; i < 11; i++){
 	#pragma omp task
 	{
 		for (int u=0; u<100000000; u++){

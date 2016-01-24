@@ -17,16 +17,17 @@ void foo() {
         result++;
     }*/
    
-  
+    #pragma omp task
+       result++;
     omp_set_schedule(omp_sched_static, 0);
     #pragma omp for schedule(runtime) 
     for (long i = 0; i < 11; i++){
-	#pragma omp task
-	{
+	//#pragma omp task
+	//{
 		for (int u=0; u<100000000; u++){
         	result++;
 		}
-	}
+	//}
     }
    
     /*#pragma omp for schedule(dynamic,1) nowait

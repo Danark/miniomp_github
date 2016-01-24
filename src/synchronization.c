@@ -5,14 +5,12 @@
 
 
 void GOMP_critical_start (void) {
-  //printf("TBI: Entering an unnamed critical, don't know if anyone else is alrady in. I proceed\n");
-  start_event_critical(6000);
+  start_event_critical(6000);//we set a fixed id for the criticals with no name
 
 }
 
 void GOMP_critical_end () {
-  //printf("Exiting an unnamed critical section. I can not inform anyone else\n");
-  end_event_critical(6000);
+  end_event_critical(6000);//we set a fixed id for the criticals with no name
 
 }
 
@@ -30,9 +28,7 @@ void GOMP_critical_name_end (void **ptr) {
 
 
 
-#if MYBARRIER
 
-#endif
 
 void GOMP_barrier() {
   barrier_count1++;
@@ -40,18 +36,18 @@ void GOMP_barrier() {
   if(barrier_count1==omp_get_num_threads()){
 	barrier_count1=0;
 	pthread_cond_broadcast(&condition);
+	count_tasks_loop_aux = count_tasks_loop;
+        restart_count_tasks_loop();
 	#if _EXTRAE_
   	end_event_thread();
   	#endif
 	pthread_mutex_unlock(&concurrent_lock);
-        count_tasks_loop_aux = count_tasks_loop;
-        restart_count_tasks_loop();
   }
   else{
 	#if _EXTRAE_
   	end_event_thread();
   	#endif
-	pthread_cond_wait(&condition, &concurrent_lock);
+	pthread_cond_wait(&condition, &concurrent_lock);//conditional wait
 	pthread_mutex_unlock(&concurrent_lock);
   }
   pthread_mutex_lock(&concurrent_lock);
@@ -76,6 +72,7 @@ void GOMP_barrier_loop(int dependences, int type) {
 	restart_count_tasks_loop();
 	pthread_cond_broadcast(&condition);
 	pthread_mutex_unlock(&concurrent_lock);
+	restart_count_tasks_loop();
   }
   else{
 	pthread_cond_wait(&condition, &concurrent_lock);
@@ -83,12 +80,7 @@ void GOMP_barrier_loop(int dependences, int type) {
   }
   pthread_mutex_lock(&concurrent_lock);
   #if _EXTRAE_
-  //set_count_dependences(dependences);
   start_event_thread();
-  //printf("count2: %d\n",count);
-  /*if(type==ws_DYNAMIC) start_vertical_dependences_dynamic(dependences);
-  if(type==ws_GUIDED) start_vertical_dependences_guided(dependences);
-  if(type==ws_STATICCHUNK) start_vertical_dependences_static(dependences);*/
   start_vertical_dependences();
   #endif
 
@@ -101,6 +93,7 @@ void GOMP_barrier_No_Extrae() {
 	barrier_count1=0;
 	pthread_cond_broadcast(&condition);
 	pthread_mutex_unlock(&concurrent_lock);
+	restart_count_tasks_loop();
   }
   else{
 

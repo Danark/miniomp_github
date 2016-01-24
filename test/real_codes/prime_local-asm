@@ -1,0 +1,292 @@
+	.file	"prime_local.c"
+	.text
+	.type	prime_number._omp_fn.0, @function
+prime_number._omp_fn.0:
+.LFB26:
+	.cfi_startproc
+	pushq	%rbp
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	pushq	%rbx
+	.cfi_def_cfa_offset 24
+	.cfi_offset 3, -24
+	subq	$8, %rsp
+	.cfi_def_cfa_offset 32
+	movq	%rdi, %rbx
+	movl	$0, %esi
+	movl	$1, %edi
+	call	omp_set_schedule
+	call	omp_get_num_threads
+	movl	%eax, %ebp
+	call	omp_get_thread_num
+	movl	%eax, %r8d
+	movl	4(%rbx), %eax
+	subl	$1, %eax
+	cltd
+	idivl	%ebp
+	movl	%eax, %edi
+	movl	%edx, %ecx
+	cmpl	%edx, %r8d
+	jl	.L2
+.L8:
+	movl	%r8d, %esi
+	imull	%edi, %esi
+	addl	%ecx, %esi
+	leal	(%rsi,%rdi), %r8d
+	movl	$0, %edi
+	cmpl	%r8d, %esi
+	jge	.L3
+	addl	$2, %esi
+	addl	$2, %r8d
+.L6:
+	cmpl	$2, %esi
+	jle	.L10
+	movl	%esi, %edx
+	shrl	$31, %edx
+	leal	(%rsi,%rdx), %eax
+	andl	$1, %eax
+	movl	$2, %ecx
+	cmpl	%edx, %eax
+	jne	.L14
+	movl	$0, %eax
+	jmp	.L4
+.L10:
+	movl	$1, %eax
+	jmp	.L4
+.L12:
+	movl	$0, %eax
+.L4:
+	addl	%eax, %edi
+	addl	$1, %esi
+	cmpl	%esi, %r8d
+	jg	.L6
+	jmp	.L3
+.L7:
+	movl	%esi, %eax
+	cltd
+	idivl	%ecx
+	testl	%edx, %edx
+	je	.L12
+.L14:
+	addl	$1, %ecx
+	cmpl	%esi, %ecx
+	jne	.L7
+	movl	$1, %eax
+	jmp	.L4
+.L3:
+	lock addl	%edi, (%rbx)
+	jmp	.L15
+.L2:
+	leal	1(%rax), %edi
+	movl	$0, %ecx
+	jmp	.L8
+.L15:
+	addq	$8, %rsp
+	.cfi_def_cfa_offset 24
+	popq	%rbx
+	.cfi_def_cfa_offset 16
+	popq	%rbp
+	.cfi_def_cfa_offset 8
+	ret
+	.cfi_endproc
+.LFE26:
+	.size	prime_number._omp_fn.0, .-prime_number._omp_fn.0
+	.globl	prime_number
+	.type	prime_number, @function
+prime_number:
+.LFB25:
+	.cfi_startproc
+	subq	$24, %rsp
+	.cfi_def_cfa_offset 32
+	movl	$0, (%rsp)
+	movl	%edi, 4(%rsp)
+	movl	$0, %ecx
+	movl	$0, %edx
+	movq	%rsp, %rsi
+	movl	$prime_number._omp_fn.0, %edi
+	call	GOMP_parallel
+	movl	(%rsp), %eax
+	addq	$24, %rsp
+	.cfi_def_cfa_offset 8
+	ret
+	.cfi_endproc
+.LFE25:
+	.size	prime_number, .-prime_number
+	.section	.rodata.str1.1,"aMS",@progbits,1
+.LC0:
+	.string	"\n"
+.LC1:
+	.string	"TEST01\n"
+	.section	.rodata.str1.8,"aMS",@progbits,1
+	.align 8
+.LC2:
+	.string	"  Call PRIME_NUMBER to count the primes from 1 to N.\n"
+	.align 8
+.LC3:
+	.string	"         N        Pi          Time\n"
+	.section	.rodata.str1.1
+.LC4:
+	.string	"  %8d  %8d  %14f\n"
+	.text
+	.globl	prime_number_sweep
+	.type	prime_number_sweep, @function
+prime_number_sweep:
+.LFB24:
+	.cfi_startproc
+	pushq	%r14
+	.cfi_def_cfa_offset 16
+	.cfi_offset 14, -16
+	pushq	%r13
+	.cfi_def_cfa_offset 24
+	.cfi_offset 13, -24
+	pushq	%r12
+	.cfi_def_cfa_offset 32
+	.cfi_offset 12, -32
+	pushq	%rbp
+	.cfi_def_cfa_offset 40
+	.cfi_offset 6, -40
+	pushq	%rbx
+	.cfi_def_cfa_offset 48
+	.cfi_offset 3, -48
+	movl	%edi, %ebx
+	movl	%esi, %r12d
+	movl	%edx, %r13d
+	movl	$.LC0, %esi
+	movl	$1, %edi
+	movl	$0, %eax
+	call	__printf_chk
+	movl	$.LC1, %esi
+	movl	$1, %edi
+	movl	$0, %eax
+	call	__printf_chk
+	movl	$.LC2, %esi
+	movl	$1, %edi
+	movl	$0, %eax
+	call	__printf_chk
+	movl	$.LC0, %esi
+	movl	$1, %edi
+	movl	$0, %eax
+	call	__printf_chk
+	movl	$.LC3, %esi
+	movl	$1, %edi
+	movl	$0, %eax
+	call	__printf_chk
+	movl	$.LC0, %esi
+	movl	$1, %edi
+	movl	$0, %eax
+	call	__printf_chk
+	cmpl	%r12d, %ebx
+	jg	.L19
+.L22:
+	call	omp_get_wtime
+	vmovq	%xmm0, %r14
+	movl	%ebx, %edi
+	call	prime_number
+	movl	%eax, %ebp
+	call	omp_get_wtime
+	vmovq	%r14, %xmm1
+	vsubsd	%xmm1, %xmm0, %xmm0
+	movl	%ebp, %ecx
+	movl	%ebx, %edx
+	movl	$.LC4, %esi
+	movl	$1, %edi
+	movl	$1, %eax
+	call	__printf_chk
+	imull	%r13d, %ebx
+	cmpl	%ebx, %r12d
+	jge	.L22
+.L19:
+	popq	%rbx
+	.cfi_def_cfa_offset 40
+	popq	%rbp
+	.cfi_def_cfa_offset 32
+	popq	%r12
+	.cfi_def_cfa_offset 24
+	popq	%r13
+	.cfi_def_cfa_offset 16
+	popq	%r14
+	.cfi_def_cfa_offset 8
+	ret
+	.cfi_endproc
+.LFE24:
+	.size	prime_number_sweep, .-prime_number_sweep
+	.section	.rodata.str1.1
+.LC5:
+	.string	"PRIME_OPENMP\n"
+.LC6:
+	.string	"  C/OpenMP version\n"
+	.section	.rodata.str1.8
+	.align 8
+.LC7:
+	.string	"  Number of processors available = %d\n"
+	.align 8
+.LC8:
+	.string	"  Number of threads =              %d\n"
+	.section	.rodata.str1.1
+.LC9:
+	.string	"  Normal end of execution.\n"
+	.text
+	.globl	main
+	.type	main, @function
+main:
+.LFB23:
+	.cfi_startproc
+	subq	$8, %rsp
+	.cfi_def_cfa_offset 16
+	movl	$.LC0, %esi
+	movl	$1, %edi
+	movl	$0, %eax
+	call	__printf_chk
+	movl	$.LC5, %esi
+	movl	$1, %edi
+	movl	$0, %eax
+	call	__printf_chk
+	movl	$.LC6, %esi
+	movl	$1, %edi
+	movl	$0, %eax
+	call	__printf_chk
+	movl	$.LC0, %esi
+	movl	$1, %edi
+	movl	$0, %eax
+	call	__printf_chk
+	call	omp_get_num_procs
+	movl	%eax, %edx
+	movl	$.LC7, %esi
+	movl	$1, %edi
+	movl	$0, %eax
+	call	__printf_chk
+	call	omp_get_max_threads
+	movl	%eax, %edx
+	movl	$.LC8, %esi
+	movl	$1, %edi
+	movl	$0, %eax
+	call	__printf_chk
+	movl	$2, %edx
+	movl	$131072, %esi
+	movl	$1, %edi
+	call	prime_number_sweep
+	movl	$10, %edx
+	movl	$500000, %esi
+	movl	$5, %edi
+	call	prime_number_sweep
+	movl	$.LC0, %esi
+	movl	$1, %edi
+	movl	$0, %eax
+	call	__printf_chk
+	movl	$.LC5, %esi
+	movl	$1, %edi
+	movl	$0, %eax
+	call	__printf_chk
+	movl	$.LC9, %esi
+	movl	$1, %edi
+	movl	$0, %eax
+	call	__printf_chk
+	movl	$0, %eax
+	addq	$8, %rsp
+	.cfi_def_cfa_offset 8
+	ret
+	.cfi_endproc
+.LFE23:
+	.size	main, .-main
+	.ident	"GCC: (Ubuntu 4.9.3-5ubuntu1~14.04) 4.9.3"
+	.section	.note.GNU-stack,"",@progbits

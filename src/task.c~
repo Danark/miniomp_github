@@ -1,48 +1,5 @@
 #include "libminiomp.h"
 
-// Initializes the task queue
-/*
-void init_task_queue(int max_elements) {
-
-
-
-}
-
-// Checks if the task descriptor is valid
-bool is_valid(void) {
-    return false;
-}
-
-// Checks if the task queue is empty
-bool is_empty() {
-    return true;
-}
-
-// Checks if the task queue is full
-bool is_full() {
-  
- return true;
-
-   
-}
-
-// Enqueues the task descriptor at the tail of the task queue
-bool enqueue(void) {
-   
-    return true;
-}
-
-// Dequeue the task descriptor at the head of the task queue
-void dequeue() { 
- 
-}
-
-
-
-// Returns the task descriptor at the head of the task queue
-/*miniomp_task_t *first() {
-    return miniomp_taskqueue.head;
-}*/
 
 /* Called when encountering an explicit task directive.  If IF_CLAUSE is
    false, then we must not delay in executing the task. */
@@ -52,13 +9,6 @@ GOMP_task (void (*fn) (void *), void *data, void (*cpyfn) (void *, void *),
            void **depend)
 {
 
-	//size_t ndepend = (uintptr_t)depend[0];
-	//size_t nout = (uintptr_t)depend[1];
-	/*for (size_t i=0; i<ndepend+2; i++){
-		printf("depend>%d\n", depend[i]);
-	}
-	printf("-------------------------------\n");*/
-	printf("depend %d\n", depend);
 	if (if_clause){
     	    if (__builtin_expect (cpyfn != NULL, 0))
         	{
@@ -66,9 +16,8 @@ GOMP_task (void (*fn) (void *), void *data, void (*cpyfn) (void *, void *),
 			char *arg = (char *) (((uintptr_t) buf + arg_align - 1) 
 						& ~(uintptr_t) (arg_align - 1));
 			cpyfn (arg, data);
-			printf("execute 1\n");
 			start_event_task();
-			//set_task_dependences (depend);
+			if(depend!=0) set_task_dependences (depend);
 			fn(arg);
 			end_event_task();
                 }
@@ -76,9 +25,8 @@ GOMP_task (void (*fn) (void *), void *data, void (*cpyfn) (void *, void *),
 		{
 			char * arg =  malloc(sizeof(char) * (arg_size + arg_align - 1));
 			memcpy(arg, data, arg_size);
-			printf("execute 2\n");
 			start_event_task();
-			//set_task_dependences (depend);
+			if(depend!=0) set_task_dependences (depend);
 			fn(arg);
 			end_event_task();
 		}
@@ -90,17 +38,15 @@ GOMP_task (void (*fn) (void *), void *data, void (*cpyfn) (void *, void *),
          	 char *arg = (char *) (((uintptr_t) buf + arg_align - 1)
          	                       & ~(uintptr_t) (arg_align - 1));
          	 cpyfn (arg, data);
-		 printf("execute 3\n");
 		 start_event_task();
- 		 //set_task_dependences (depend);
+ 		 if(depend!=0) set_task_dependences (depend);
                  fn(arg);
 		 end_event_task();
 		 
        	 	}
     		else{
-			printf("execute 4\n");
 			start_event_task();
-			//set_task_dependences (depend);
+			if(depend!=0) set_task_dependences (depend);
         		fn(data);
 			end_event_task();
 		}
@@ -112,6 +58,9 @@ GOMP_task (void (*fn) (void *), void *data, void (*cpyfn) (void *, void *),
 void
 GOMP_taskwait (void)
 {
+
+    GOMP_barrier();
+    set_task_wait();
     printf("TBI: Entered in taskwait, there should be no pending tasks, so I proceed\n");
     
       

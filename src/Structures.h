@@ -37,11 +37,14 @@ typedef struct {
     int index;
 } miniomp_hash_t;
 
+
+//Type declaration for task dependence node
 typedef struct {
    int level;
    int task;
 } miniomp_task_node_t;
 
+//Type decalration for task dependence tree
 typedef struct {
    miniomp_task_node_t *depend;
    int index;
@@ -49,18 +52,12 @@ typedef struct {
    int dependencia;
 } miniomp_task_tree_t;
 
+//Type declaration for task dependences vector
 typedef struct {
    miniomp_task_tree_t *depend;
    int index;
 } miniomp_task_dependences_t;
 
-/*typedef struct {
-   int index;
-   int *depend_out;
-   int *depend_in;
-   int *task_out;
-   int *task_in;
-} miniomp_task_dependences_t;*/
 
 
 

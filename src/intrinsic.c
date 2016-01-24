@@ -14,8 +14,6 @@ int omp_get_thread_num (void) {
 }
 
 void omp_set_schedule (int n, int p) {
-  printf("schedule %d\n", n);
-  printf("chubk %d\n", p);
   miniomp_icv.run_ched_var = (n > 0 ? n : 1);
   miniomp_icv.run_ched_chunk_size = (p > 0 ? p : 0);
 }

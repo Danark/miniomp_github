@@ -1,4 +1,4 @@
-.SUFFIXES: -omp -domp -gomp -dgomp -asm -gasm
+.SUFFIXES: -omp -domp -gomp -dgomp -asm -gasm -sec
 CC = gcc
 OPENMP	 = -fopenmp
 CFLAGS   = -Wall -O -std=c99 -march=native -I.
@@ -15,6 +15,10 @@ CLIBS    = -L$(MINIOMP)/lib -lminiomp
 
 .c-gomp: 
 	$(CC) $(CFLAGS) $(OPENMP) $< -o $@ 
+
+.c-sec: 
+	$(CC) $(CFLAGS) $< -o $@ 
+
 
 .c-domp: 
 	$(CC) -D_DISPLAY_ $(CFLAGS) $(OPENMP) $< -o $@ $(CLIBS) -lX11 -L/usr/X11R6/lib

@@ -16,14 +16,16 @@ void parse_env(void) {
       miniomp_icv.nthreads_var = atoi(env);
     }
     printf("Setting nthreads_var ICV to %d\n", miniomp_icv.nthreads_var);
+    //printf("jjjj\n");
     env = getenv ("OMP_SCHEDULE");
+    //printf("ddddd\n");
     if (env == NULL) {
-	printf("ccaa");
-    
+	printf("Environment variable OMP_SCHEDULE not defined\n");    
     }else{
 	int trobat = 0;
 	int run_ched_var;
 	while(trobat==0){
+		//printf("yep\n");
 		if(strncasecmp(env,"auto", 4) ==0){
 			trobat=1;
 			env+=5;

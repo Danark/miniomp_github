@@ -24,25 +24,29 @@ extern pthread_key_t miniomp_specifickey;
 
 //Pointer to the threads array
 extern pthread_t *threads;
-//Barrier indicator 1
+//Barrier indicators
 extern int barrier_count1;
-//Barrier indicator 2
-extern int barrier_count2;
 extern int barrier_count3;
+
+//task count
 extern int count;
-extern int count_critical_loop;
-extern int end;
-extern int count_dependences;
+
+//count inner tasks
 extern int count_tasks_loop;
-extern int count_loop;
-extern int count_max_inner_loop;
-extern int count_inner_loop;
-extern int thread_count;
-extern int count_ite;
-extern int count_chunk;
-extern int count_max_chunk;
-extern int *no_wait_dependences;
 extern int count_tasks_loop_aux;
+
+//vectors of threads tasks
+extern int *no_wait_dependences;
+extern int *old_dependences;
+
+//count init loop threads
+extern int count_loop_init;
+
+//witch paralel section is
+extern int start;
+
+//last sequential region
+extern int sequential_region;
 
 // Declaratiuon of global variable for single work descriptor
 extern int single_count;
